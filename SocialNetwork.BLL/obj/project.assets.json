@@ -821,11 +821,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.BLL\\SocialNetwork.BLL.csproj",
+      "projectUniqueName": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.BLL\\SocialNetwork.BLL.csproj",
       "projectName": "SocialNetwork.BLL",
-      "projectPath": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.BLL\\SocialNetwork.BLL.csproj",
+      "projectPath": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.BLL\\SocialNetwork.BLL.csproj",
       "packagesPath": "C:\\Users\\Monster\\.nuget\\packages\\",
-      "outputPath": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.BLL\\obj\\",
+      "outputPath": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.BLL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

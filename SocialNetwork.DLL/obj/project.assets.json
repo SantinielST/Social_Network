@@ -3101,11 +3101,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
+      "projectUniqueName": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
       "projectName": "SocialNetwork.DLL",
-      "projectPath": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
+      "projectPath": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
       "packagesPath": "C:\\Users\\Monster\\.nuget\\packages\\",
-      "outputPath": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\obj\\",
+      "outputPath": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.DLL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wItW87M/lmM=",
+  "dgSpecHash": "sWwoGM48ENg=",
   "success": true,
-  "projectFilePath": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
+  "projectFilePath": "C:\\Users\\Monster\\SocialNetwork\\SocialNetwork.DLL\\SocialNetwork.DLL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Monster\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Monster\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.19\\microsoft.aspnetcore.cryptography.internal.8.0.19.nupkg.sha512",
