@@ -1,5 +1,0 @@
-d:\repos\Val-in\SocialNetwork.BLL\obj\Debug\net9.0\SocialNetwork.BLL.GeneratedMSBuildEditorConfig.editorconfig
-d:\repos\Val-in\SocialNetwork.BLL\obj\Debug\net9.0\SocialNetwork.BLL.AssemblyInfoInputs.cache
-d:\repos\Val-in\SocialNetwork.BLL\obj\Debug\net9.0\SocialNetwork.BLL.AssemblyInfo.cs
-d:\repos\Val-in\SocialNetwork.BLL\obj\Debug\net9.0\SocialNetwork.BLL.csproj.CoreCompileInputs.cache
-d:\repos\Val-in\SocialNetwork.BLL\obj\Debug\net9.0\SocialNetwork.BLL.csproj.AssemblyReference.cache
