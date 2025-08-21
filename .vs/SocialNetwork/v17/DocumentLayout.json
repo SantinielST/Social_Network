@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Repos\\Val-in\\SocialNetwork\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E8E596EF-C41C-479F-8C4D-66705117CE14}|SocialNetwork.DLL\\SocialNetwork.DLL.csproj|d:\\repos\\val-in\\socialnetwork\\socialnetwork.dll\\entities\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8E596EF-C41C-479F-8C4D-66705117CE14}|SocialNetwork.DLL\\SocialNetwork.DLL.csproj|solutionrelative:socialnetwork.dll\\entities\\userentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F8679D6-124F-499F-B58B-9DD1C68E5246}|SocialNetwork.BLL\\SocialNetwork.BLL.csproj|d:\\repos\\val-in\\socialnetwork\\socialnetwork.bll\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F8679D6-124F-499F-B58B-9DD1C68E5246}|SocialNetwork.BLL\\SocialNetwork.BLL.csproj|solutionrelative:socialnetwork.bll\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 30,
           "Children": [
             {
               "$type": "Bookmark",
@@ -132,8 +141,30 @@
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserEntity.cs",
+              "DocumentMoniker": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\Entities\\UserEntity.cs",
+              "RelativeDocumentMoniker": "SocialNetwork.DLL\\Entities\\UserEntity.cs",
+              "ToolTip": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.DLL\\Entities\\UserEntity.cs",
+              "RelativeToolTip": "SocialNetwork.DLL\\Entities\\UserEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-21T13:33:22.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.BLL\\Models\\User.cs",
+              "RelativeDocumentMoniker": "SocialNetwork.BLL\\Models\\User.cs",
+              "ToolTip": "D:\\Repos\\Val-in\\SocialNetwork\\SocialNetwork.BLL\\Models\\User.cs",
+              "RelativeToolTip": "SocialNetwork.BLL\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-21T13:33:11.581Z",
+              "EditorCaption": ""
             }
           ]
         }

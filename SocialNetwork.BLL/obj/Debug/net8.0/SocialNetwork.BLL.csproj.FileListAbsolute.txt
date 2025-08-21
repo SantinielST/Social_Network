@@ -22,3 +22,4 @@ D:\Repos\Val-in\SocialNetwork\SocialNetwork.BLL\obj\Debug\net8.0\SocialNetwork.B
 D:\Repos\Val-in\SocialNetwork\SocialNetwork.BLL\obj\Debug\net8.0\refint\SocialNetwork.BLL.dll
 D:\Repos\Val-in\SocialNetwork\SocialNetwork.BLL\obj\Debug\net8.0\SocialNetwork.BLL.pdb
 D:\Repos\Val-in\SocialNetwork\SocialNetwork.BLL\obj\Debug\net8.0\ref\SocialNetwork.BLL.dll
+D:\Repos\Val-in\SocialNetwork\SocialNetwork.BLL\obj\Debug\net8.0\SocialNetwork.BLL.sourcelink.json
