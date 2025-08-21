@@ -16,4 +16,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SocialNetwor.DLL\SocialNetwork.DLL.csproj" />
+    <ProjectReference Include="..\SocialNetwork.BLL\SocialNetwork.BLL.csproj" />
+  </ItemGroup>
+
 </Project>
