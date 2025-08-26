@@ -21,6 +21,8 @@ public class Program
         })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+        builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
+
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
