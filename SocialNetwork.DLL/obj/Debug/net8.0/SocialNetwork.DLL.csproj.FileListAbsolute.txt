@@ -1,0 +1,15 @@
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\bin\Debug\net8.0\SocialNetwork.DLL.deps.json
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\bin\Debug\net8.0\SocialNetwork.DLL.runtimeconfig.json
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\bin\Debug\net8.0\SocialNetwork.DLL.dll
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\bin\Debug\net8.0\SocialNetwork.DLL.pdb
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.csproj.AssemblyReference.cache
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.AssemblyInfoInputs.cache
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.AssemblyInfo.cs
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.csproj.CoreCompileInputs.cache
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.sourcelink.json
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.dll
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\refint\SocialNetwork.DLL.dll
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.pdb
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\SocialNetwork.DLL.genruntimeconfig.cache
+C:\Users\Monster\SocialNetwork\SocialNetwork.DLL\obj\Debug\net8.0\ref\SocialNetwork.DLL.dll

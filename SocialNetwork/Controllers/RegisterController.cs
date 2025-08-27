@@ -5,10 +5,12 @@ using SocialNetwork.BLL.Models;
 using SocialNetwork.ViewModels;
 using System.Net;
 
+
 namespace SocialNetwork.Controllers
 {
     public class RegisterController : Controller
     {
+
         private readonly IMapper _mapper; //преобразует ViewModel -> доменная модель User
 
         private readonly UserManager<User> _userManager;
@@ -34,6 +36,7 @@ namespace SocialNetwork.Controllers
         {
             return View("RegisterPart2", model);
         }
+
 
         [Route("Register")]
         [HttpPost]
