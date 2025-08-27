@@ -47,8 +47,7 @@ namespace SocialNetwork.Controllers
                 var user = _mapper.Map<User>(model);
 
                 var result = await _userManager.CreateAsync(user, model.PasswordReg);
-            //Автовход: создать аутентификационную cookie
-            //    Второй параметр (isPersistent=false) — сессия до закрытия браузера
+
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
