@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.ViewModels;
+using System.Net;
+
 
 namespace SocialNetwork.Controllers
 {
     public class RegisterController : Controller
     {
-        private IMapper _mapper;
+
+        private readonly IMapper _mapper; //преобразует ViewModel -> доменная модель User
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -34,15 +37,17 @@ namespace SocialNetwork.Controllers
             return View("RegisterPart2", model);
         }
 
+
         [Route("Register")]
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model) //возврат на вторую форму
         {
             if (ModelState.IsValid)
             {
                 var user = _mapper.Map<User>(model);
 
                 var result = await _userManager.CreateAsync(user, model.PasswordReg);
+
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);

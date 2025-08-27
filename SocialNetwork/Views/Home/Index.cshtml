@@ -1,7 +1,7 @@
-﻿@* ﻿@using Microsoft.AspNetCore.Identity;
-@using SocialNetwork.BLL.Models; *@
-@* @inject SignInManager<User> SignInManager;
-@inject UserManager<User> UserManager; *@
+@using Microsoft.AspNetCore.Identity;
+@using SocialNetwork.BLL.Models;
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
 
 @model SocialNetwork.ViewModels.MainViewModel;
 
@@ -23,8 +23,10 @@ else
         </div>
 
         <div class="main">
+
             <partial name="Login" model="Model.LoginView" />
-            <partial name="Register" model="Model.RegisterView" />
+            <partial name="Register" model="Model.RegisterView" />          
+
         </div>
     </div>
 @* } *@

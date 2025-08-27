@@ -8,7 +8,7 @@ namespace SocialNetwork.Controllers
 {
     public class AccountManagerController : Controller
     {
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -19,7 +19,6 @@ namespace SocialNetwork.Controllers
             _signInManager = signInManager;
             _mapper = mapper;
         }
-
 
         [Route("Login")]
         [HttpGet]
@@ -74,3 +73,4 @@ namespace SocialNetwork.Controllers
         }
     }
 }
+
