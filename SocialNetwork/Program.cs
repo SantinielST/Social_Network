@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL;
+using SocialNetwork.DLL.Entities;
 
 namespace SocialNetwork;
 
@@ -12,7 +13,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
-        builder.Services.AddIdentity<User, IdentityRole>(opts => {
+        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts => {
             opts.Password.RequiredLength = 11;
             opts.Password.RequireNonAlphanumeric = true;
             opts.Password.RequireLowercase = true;

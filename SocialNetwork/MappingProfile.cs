@@ -1,17 +1,23 @@
 ﻿using AutoMapper;
-using SocialNetwork.BLL.Models;
+using SocialNetwork.DLL.Entities;
 using SocialNetwork.ViewModels;
-
-namespace SocialNetwork;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<RegisterViewModel, User>()
-            .ForMember(x => x.BirthDate, opt => opt.MapFrom(c => new DateTime((int)c.Year, (int)c.Month, (int)c.Date)))
-            .ForMember(x => x.Email, opt => opt.MapFrom(c => c.EmailReg))
-            .ForMember(x => x.UserName, opt => opt.MapFrom(c => c.Login));
-        CreateMap<LoginViewModel, User>();
+        CreateMap<RegisterViewModel, UserEntity>()
+            .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src =>
+                src.Year.HasValue && src.Month.HasValue && src.Date.HasValue
+                    ? DateTime.SpecifyKind(new DateTime(src.Year.Value, src.Month.Value, src.Date.Value), DateTimeKind.Utc)
+                    : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)
+            ))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Login))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EmailReg))
+            .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => string.Empty));
+
+        CreateMap<LoginViewModel, UserEntity>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
     }
 }

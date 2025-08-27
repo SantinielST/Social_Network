@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
+using SocialNetwork.DLL.Entities;
 using SocialNetwork.ViewModels;
-using System.Net;
 
 
 namespace SocialNetwork.Controllers
@@ -13,10 +13,10 @@ namespace SocialNetwork.Controllers
 
         private readonly IMapper _mapper; //преобразует ViewModel -> доменная модель User
 
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<UserEntity> _userManager;
+        private readonly SignInManager<UserEntity> _signInManager;
 
-        public RegisterController(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager)
+        public RegisterController(IMapper mapper, UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -44,7 +44,7 @@ namespace SocialNetwork.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _mapper.Map<User>(model);
+                var user = _mapper.Map<UserEntity>(model);
 
                 var result = await _userManager.CreateAsync(user, model.PasswordReg);
 
