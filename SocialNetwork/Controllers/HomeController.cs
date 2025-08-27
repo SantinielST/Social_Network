@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.BLL.Models;
+using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers
 {

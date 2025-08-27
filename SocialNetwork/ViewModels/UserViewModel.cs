@@ -1,6 +1,17 @@
+using SocialNetwork.BLL.Models;
+
 namespace SocialNetwork.ViewModels;
 
 public class UserViewModel
 {
+    public int Id { get; set; }
+    public User User { get; set; }
+
+    public UserViewModel(User user) 
+    {
+        User = user;
+    }
+
+    public List < User > Friends { get; set; }
     
 }
