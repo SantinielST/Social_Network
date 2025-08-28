@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL;
+using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.Entities;
 using SocialNetwork.DLL.Interfaces;
-using SocialNetwork.DLL.Repositories;
 
 namespace SocialNetwork;
 
@@ -15,9 +14,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection))
-            .AddUnitOfWork()
-                    .AddCustomRepository<Friend, FriendsRepository>();
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
 
 
         builder.Services.AddIdentity<UserEntity, IdentityRole>(opts =>
