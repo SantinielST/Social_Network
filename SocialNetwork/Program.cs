@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL;
 using SocialNetwork.DLL.Entities;
+using SocialNetwork.DLL.Interfaces;
+using SocialNetwork.DLL.Repositories;
 
 namespace SocialNetwork;
 
@@ -11,9 +13,15 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
-        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts => {
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection))
+            .AddUnitOfWork()
+                    .AddCustomRepository<Friend, FriendsRepository>();
+
+
+        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts =>
+        {
             opts.Password.RequiredLength = 11;
             opts.Password.RequireNonAlphanumeric = true;
             opts.Password.RequireLowercase = true;
@@ -22,6 +30,8 @@ public class Program
         })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+        //builder.Services.AddScoped<IUnitOfWork>();
+        builder.Services.AddScoped<IRepository<FriendEntity>, FriendsRepository>();
         builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
 
         // Add services to the container.
