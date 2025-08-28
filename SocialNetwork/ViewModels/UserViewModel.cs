@@ -4,14 +4,15 @@ namespace SocialNetwork.ViewModels;
 
 public class UserViewModel
 {
-    public int Id { get; set; }
+    public string Id => User.Id;
+    public string Email { get; set; }
     public User User { get; set; }
+    public List<User> Friends { get; set; } = new();
 
-    public UserViewModel(User user) 
+    public UserViewModel() { } //Model Binding §Ú§ã§á§à§Ý§î§Ù§å§Ö§ä §á§å§ã§ä§à§Û §Ü§à§ß§ã§ä§â§å§Ü§ä§à§â.
+
+    public UserViewModel(User user)
     {
         User = user;
     }
-
-    public List < User > Friends { get; set; }
-    
 }

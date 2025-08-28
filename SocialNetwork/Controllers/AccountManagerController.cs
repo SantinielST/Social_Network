@@ -1,61 +1,68 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.BLL.Models;
+using SocialNetwork.BLL.Services;
+using SocialNetwork.DLL.Entities;
 using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers
 {
     public class AccountManagerController : Controller
     {
-        private readonly IMapper _mapper;
+        private readonly UserService _userService;
+        private readonly SignInManager<UserEntity> _signInManager;
 
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-
-        public AccountManagerController(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
+        public AccountManagerController(UserService userService, SignInManager<UserEntity> signInManager)
         {
-            _userManager = userManager;
+            _userService = userService;
             _signInManager = signInManager;
-            _mapper = mapper;
+        }
+
+        // GET /Account/Login
+        [HttpGet("Login")] //убрала лишний get, объединила в один.
+                           //Если returnUrl не передавать, пользователя всегда будет возвращать на главную страницу (Home/Index).
+        public IActionResult Login(string returnUrl = null)
+        {
+            var model = new LoginViewModel { ReturnUrl = returnUrl };
+            return View(model); 
         }
 
         [Route("Login")]
-        [HttpGet]
-        public IActionResult Login()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            return View("Home/Login");
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(model);
+            }
+
+            // Получаем пользователя через сервис
+            var userEntity = await _userService.GetByEmailAsync(model.Email);
+            if (userEntity == null)
+            {
+                ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                return View(model);
+            }
+
+            // Логинимся через SignInManager
+            var result = await _signInManager.PasswordSignInAsync(userEntity.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    return Redirect(model.ReturnUrl);
+
+                return RedirectToAction("Profile", "User", new { id = userEntity.Id });
+            }
+
+            ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+            return View(model);
         }
-
-        //[Route("Login")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Login(LoginViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-
-        //        var user = _mapper.Map<User>(model);
-
-        //        var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
-        //        if (result.Succeeded)
-        //        {
-        //            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-        //            {
-        //                return Redirect(model.ReturnUrl);
-        //            }
-        //            else
-        //            {
-        //                return RedirectToAction("Index", "Home");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "Неправильный логин и (или) пароль");
-        //        }
-        //    }
-        //    return View("Views/Home/Index.cshtml");
-        //}
 
         [Route("Logout")]
         [HttpPost]
@@ -67,3 +74,4 @@ namespace SocialNetwork.Controllers
         }
     }
 }
+

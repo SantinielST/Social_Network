@@ -18,13 +18,13 @@ public class UserEditViewModel
 
     [EmailAddress]
     [Display(Name = "Email", Prompt = "example.com")]
-    public string Email { get; set; }
+    public string EmailReg { get; set; }
 
     [DataType(DataType.Date)]
     [Display(Name = "Дата рождения")]
     public DateTime BirthDate { get; set; }
 
-    public string UserName => Email;
+    public string UserName => EmailReg;
 
     [DataType(DataType.Text)]
     [Display(Name = "Отчество", Prompt = "Введите отчество")]
@@ -41,22 +41,5 @@ public class UserEditViewModel
     [DataType(DataType.Text)]
     [Display(Name = "О себе", Prompt = "Введите данные о себе")]
     public string About { get; set; }
-    
-    // public string Email { get; set; }
-    // public string UserName => Email;
-    // public string FirstName { get; set; }
-    //
-    // public string LastName { get; set; }
-    //
-    // public string MiddleName { get; set; }
-    //
-    // public DateTime BirthDate { get; set; }
-    //
-    // public string Image { get; set; }
-    //
-    // public string Status { get; set; }
-    //
-    //
-    // public string About { get; set; }
     
 }

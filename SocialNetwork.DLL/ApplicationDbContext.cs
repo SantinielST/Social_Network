@@ -10,4 +10,6 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity>
     {
         Database.EnsureCreated();
     }
+
+    public DbSet<UserEntity> userEntities { get; set; }
 }
