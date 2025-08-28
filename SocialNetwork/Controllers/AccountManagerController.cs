@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL.Entities;
-using SocialNetwork.DLL.Interfaces;
 using SocialNetwork.DLL.Repositories;
+using SocialNetwork.DLL.UoW;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
 

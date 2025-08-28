@@ -4,6 +4,7 @@ using SocialNetwork.DLL;
 using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.Entities;
 using SocialNetwork.DLL.Interfaces;
+using SocialNetwork.DLL.UoW;
 
 namespace SocialNetwork;
 
@@ -16,7 +17,6 @@ public class Program
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
 
-
         builder.Services.AddIdentity<UserEntity, IdentityRole>(opts =>
         {
             opts.Password.RequiredLength = 11;
@@ -27,7 +27,7 @@ public class Program
         })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-        //builder.Services.AddScoped<IUnitOfWork>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IRepository<FriendEntity>, FriendsRepository>();
         builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
 
