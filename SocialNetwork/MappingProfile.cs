@@ -13,8 +13,7 @@ public class MappingProfile : Profile
                     : DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)
             ))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Login))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EmailReg))
-            .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => string.Empty));
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EmailReg));
 
         CreateMap<LoginViewModel, UserEntity>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
