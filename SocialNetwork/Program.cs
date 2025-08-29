@@ -5,6 +5,7 @@ using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.Entities;
 using SocialNetwork.DLL.Interfaces;
 using SocialNetwork.DLL.UoW;
+using SocialNetwork.BLL.Services;
 
 namespace SocialNetwork;
 
@@ -25,10 +26,13 @@ public class Program
             opts.Password.RequireUppercase = true;
             opts.Password.RequireDigit = true;
         })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
-        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<FriendService>();
         builder.Services.AddScoped<IRepository<FriendEntity>, FriendsRepository>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
 
         // Add services to the container.

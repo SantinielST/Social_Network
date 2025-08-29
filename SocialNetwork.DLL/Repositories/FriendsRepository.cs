@@ -36,14 +36,13 @@ public class FriendsRepository : Repository<FriendEntity>
         return friends.ToList();
     }
 
-    public void DeleteFriend(UserEntity target, UserEntity Friend)
+    public void DeleteFriend(UserEntity target, UserEntity friend)
     {
-        var friends = Set.AsEnumerable().FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == Friend.Id);
+        var friends = Set.AsEnumerable().FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
         if (friends != null)
         {
             Delete(friends);
         }
     }
-
 }

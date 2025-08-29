@@ -1,5 +1,4 @@
 ﻿using SocialNetwork.BLL.Models;
-using SocialNetwork.DLL.Entities;
 
 namespace SocialNetwork.ViewModels;
 

@@ -1,31 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
-using SocialNetwork.DLL.Entities;
-using SocialNetwork.DLL.Repositories;
-using SocialNetwork.DLL.UoW;
+using SocialNetwork.BLL.Services;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers;
 
-public class AccountManagerController : Controller
+public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService) : Controller
 {
-    private readonly IMapper _mapper;
+    private readonly IMapper _mapper = mapper;
 
-    private readonly UserManager<UserEntity> _userManager;
-    private readonly SignInManager<UserEntity> _signInManager;
-    private IUnitOfWork _unitOfWork;
-
-    public AccountManagerController(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, IMapper mapper, IUnitOfWork unitOfWork)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly UserService _userService = userService;
+    private readonly FriendService _friendService = friendService;
 
     [Route("Login")]
     [HttpGet]
@@ -47,32 +35,32 @@ public class AccountManagerController : Controller
     {
         var user = User;
 
-        var result = await _userManager.GetUserAsync(user);
+        var result = await _userService.GetUserAsync(user);
 
         var model = new UserViewModel(result);
 
-        model.Friends = await GetAllFriend(model.User);
+        model.Friends = _friendService.GetFriendsByUser(model.User);
 
         return View("User", model);
     }
 
-    private async Task<List<UserEntity>> GetAllFriend(UserEntity user)
-    {
-        var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
+    //private async Task<List<User>> GetAllFriend(User user)
+    //{
+    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        return repository.GetFriendsByUser(user);
-    }
+    //    return repository.GetFriendsByUser(user);
+    //}
 
-    private async Task<List<UserEntity>> GetAllFriend()
-    {
-        var user = User;
+    //private async Task<List<UserEntity>> GetAllFriend()
+    //{
+    //    var user = User;
 
-        var result = await _userManager.GetUserAsync(user);
+    //    var result = await _userManager.GetUserAsync(user);
 
-        var repository = _unitOfWork.GetRepository<Friend>() as FriendsRepository;
+    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        return repository.GetFriendsByUser(result);
-    }
+    //    return repository.GetFriendsByUser(result);
+    //}
 
     [Route("Edit")]
     [HttpGet]
@@ -80,7 +68,7 @@ public class AccountManagerController : Controller
     {
         var user = User;
 
-        var result = _userManager.GetUserAsync(user);
+        var result = _userService.GetUserAsync(user);
 
         var editmodel = _mapper.Map<UserEditViewModel>(result.Result);
 
@@ -94,11 +82,12 @@ public class AccountManagerController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await _userService.GetUserByIdAsync(model.UserId);
 
             user.Convert(model);
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.UpdateAsync(user);
+
             if (result.Succeeded)
             {
                 return RedirectToAction("MyPage", "AccountManager");
@@ -122,13 +111,14 @@ public class AccountManagerController : Controller
     {
         if (ModelState.IsValid)
         {
+            var user = _mapper.Map<User>(model);
 
-            var user = _mapper.Map<UserEntity>(model);
+            var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
 
-            var result = await _signInManager.PasswordSignInAsync(user.Email, model.Password, model.RememberMe, false);
-
-            if (result.Succeeded)
+            if (result)
             {
+                await _userService.SignInAsync(user.Email, false);
+                //return RedirectToAction("Index", "Home");
                 return RedirectToAction("MyPage", "AccountManager");
             }
             else
@@ -144,7 +134,7 @@ public class AccountManagerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await _userService.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
 
@@ -162,14 +152,10 @@ public class AccountManagerController : Controller
     {
         var currentuser = User;
 
-        var result = await _userManager.GetUserAsync(currentuser);
+        var result = await _userService.GetUserAsync(currentuser);
+        var friend = await _userService.GetUserByIdAsync(id);
 
-        var friend = await _userManager.FindByIdAsync(id);
-
-        var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-        repository.AddFriend(result, friend);
-
+        _friendService.AddFriend(result, friend);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -180,13 +166,10 @@ public class AccountManagerController : Controller
     {
         var currentuser = User;
 
-        var result = await _userManager.GetUserAsync(currentuser);
+        var result = await _userService.GetUserAsync(currentuser);
+        var friend = await _userService.GetUserByIdAsync(id);
 
-        var friend = await _userManager.FindByIdAsync(id);
-
-        var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-        repository.DeleteFriend(result, friend);
+        _friendService.DeleteFriend(result, friend);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -195,12 +178,14 @@ public class AccountManagerController : Controller
     {
         var currentuser = User;
 
-        var result = await _userManager.GetUserAsync(currentuser);
+        var result = await _userService.GetUserAsync(currentuser);
 
-        var list = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
-        var withfriend = await GetAllFriend();
+        var list = _userService.GetUsersForSearch(search);/* _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();*/
+
+        var withfriend = _friendService.GetFriendsByUser(result);
 
         var data = new List<UserWithFriendExt>();
+
         list.ForEach(x =>
         {
             var t = _mapper.Map<UserWithFriendExt>(x);

@@ -2,6 +2,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL.Entities;
+using System.Security.Claims;
+
+namespace SocialNetwork.BLL.Services;
 
 public class UserService
 {
@@ -14,6 +17,12 @@ public class UserService
         _userManager = userManager;
         _mapper = mapper;
         _signInManager = signInManager;
+    }
+
+    public async Task<User?> GetUserAsync(ClaimsPrincipal user)
+    {
+        var userEntity = await _userManager.GetUserAsync(user);
+        return _mapper.Map<User>(userEntity);
     }
 
     public async Task<User?> GetUserByIdAsync(string id)
@@ -48,6 +57,11 @@ public class UserService
             await _signInManager.SignInAsync(userEntity, isPersistent);
     }
 
+    public bool IsSignIn(ClaimsPrincipal user)
+    {
+       return _signInManager.IsSignedIn(user);
+    }
+
     public async Task SignOutAsync()
     {
         await _signInManager.SignOutAsync();
@@ -56,5 +70,17 @@ public class UserService
     public async Task<UserEntity?> GetUserEntityByEmailAsync(string email)
     {
         return await _userManager.FindByEmailAsync(email);
+    }
+
+    public async Task<IdentityResult> UpdateAsync(User user)
+    {
+       return await _userManager.UpdateAsync(_mapper.Map<UserEntity>(user));
+    }
+
+    public List<User> GetUsersForSearch(string search)
+    {
+        var userListEntity = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
+
+        return [.. userListEntity.Select(u => _mapper.Map<User>(u))];
     }
 }

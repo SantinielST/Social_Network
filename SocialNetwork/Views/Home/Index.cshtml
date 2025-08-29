@@ -1,8 +1,7 @@
 @using Microsoft.AspNetCore.Identity;
 @using SocialNetwork.BLL.Models;
 @using SocialNetwork.DLL.Entities
-@inject SignInManager<UserEntity> SignInManager;
-@inject UserManager<UserEntity> UserManager;
+@inject SocialNetwork.BLL.Services.UserService UserService;
 
 @model SocialNetwork.ViewModels.MainViewModel;
 
@@ -11,8 +10,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (SignInManager.IsSignedIn(User))
-{   <li class="nav-item">
+@if (UserService.IsSignIn(User))
+{   
+    <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
     </li>
 }
