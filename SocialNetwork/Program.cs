@@ -17,23 +17,22 @@ public class Program
 
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
-
-        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts =>
-        {
-            opts.Password.RequiredLength = 11;
+        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts => { //Identity �٧ߧѧ֧� ���ݧ�ܧ� ���� UserEntity, �� �ߧ� ���� User (BLL)
+            opts.Password.RequiredLength = 5;
             opts.Password.RequireNonAlphanumeric = true;
             opts.Password.RequireLowercase = true;
             opts.Password.RequireUppercase = true;
             opts.Password.RequireDigit = true;
         })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders(); //�էݧ� �ܧ�ܧ�
 
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<FriendService>();
         builder.Services.AddScoped<IRepository<FriendEntity>, FriendsRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
+        builder.Services.AddScoped<UserService>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();

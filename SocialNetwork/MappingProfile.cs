@@ -7,6 +7,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        // ViewModel -> BLL
         CreateMap<RegisterViewModel, User>()
             .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src =>
                 src.Year.HasValue && src.Month.HasValue && src.Date.HasValue
@@ -15,7 +16,7 @@ public class MappingProfile : Profile
             ))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Login))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EmailReg))
-             .ForMember(dest => dest.UserName, opt => opt.MapFrom(c => c.Login));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(c => c.Login));
 
         CreateMap<LoginViewModel, User>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

@@ -41,7 +41,7 @@ public class RegisterController : Controller
             var user = _mapper.Map<User>(model);
 
             var result = await _userService.CreateUserAsync(user, model.PasswordReg);
-
+            
             if (result.Succeeded)
             {
                 await _userService.SignInAsync(user.Email, false);

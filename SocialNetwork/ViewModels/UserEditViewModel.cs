@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialNetwork.ViewModels;
 
@@ -24,8 +24,10 @@ public class UserEditViewModel
     [Display(Name = "Дата рождения")]
     public DateTime BirthDate { get; set; }
 
-    public string UserName => Email;
-
+    DataType(DataType.Text)]
+    [Display(Name = "Отчество", Prompt = "Введите отчество")]
+    public string MiddleName { get; set; }
+  
     [DataType(DataType.ImageUrl)]
     [Display(Name = "Фото", Prompt = "Укажите ссылку на картинку")]
     public string Image { get; set; }

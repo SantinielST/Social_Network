@@ -17,7 +17,7 @@ namespace SocialNetwork.ViewModels
         [Required(ErrorMessage = "Email обязательно для заполнения")]
         [EmailAddress]
         [Display(Name = "Email", Prompt = "example.com")]
-        public string EmailReg { get; set; }
+        public string? EmailReg { get; set; }
 
         [Required(ErrorMessage = "Год обязательно для заполнения")]
         [Display(Name = "Год", Prompt = "Год")]

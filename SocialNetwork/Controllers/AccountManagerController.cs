@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
@@ -111,14 +111,13 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-            var user = _mapper.Map<User>(model);
+`           var user = _mapper.Map<User>(model);
 
             var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
 
             if (result)
             {
                 await _userService.SignInAsync(user.Email, false);
-                //return RedirectToAction("Index", "Home");
                 return RedirectToAction("MyPage", "AccountManager");
             }
             else

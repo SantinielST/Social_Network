@@ -7,6 +7,8 @@
 <div class="block-reg background-white">
     <h4 class="center">Добро пожаловать!</h4>
     <form class="frm" method="post" asp-controller="AccountManager" asp-action="Login">
+        <input type="hidden" asp-for="ReturnUrl" />
+
         <div asp-validation-summary="ModelOnly"></div>
         <div>
             <div class="mrgn">

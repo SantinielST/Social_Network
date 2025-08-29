@@ -1,4 +1,4 @@
-﻿using SocialNetwork.BLL.Models;
+using SocialNetwork.BLL.Models;
 
 namespace SocialNetwork.ViewModels;
 
