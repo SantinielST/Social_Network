@@ -1,19 +1,23 @@
 @using Microsoft.AspNetCore.Identity;
 @using SocialNetwork.BLL.Models;
-@inject SignInManager<User> SignInManager;
-@inject UserManager<User> UserManager;
+@using SocialNetwork.DLL.Entities
+@inject SocialNetwork.BLL.Services.UserService UserService;
 
 @model SocialNetwork.ViewModels.MainViewModel;
 
 @{
     ViewData["Title"] = "Main Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@* @if (SignInManager.IsSignedIn(User))
-{
-    <div>Hello @User.Identity!</div>
+
+@if (UserService.IsSignIn(User))
+{   
+    <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+    </li>
 }
 else
-{ *@
+{
     <div class="row">
         <div class="side" >
             <div class="center">
@@ -29,4 +33,4 @@ else
 
         </div>
     </div>
-@* } *@
+}

@@ -1,4 +1,6 @@
-﻿namespace SocialNetwork.DLL.Interfaces;
+﻿using SocialNetwork.DLL.Interfaces;
+
+namespace SocialNetwork.DLL.UoW;
 
 public interface IUnitOfWork : IDisposable
 {
