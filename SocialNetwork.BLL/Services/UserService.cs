@@ -32,5 +32,7 @@ namespace SocialNetwork.BLL.Services
         {
             return await _userManager.FindByEmailAsync(email);
         }
+        
+        
     }
 }

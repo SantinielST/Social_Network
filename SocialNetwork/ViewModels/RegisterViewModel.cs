@@ -46,6 +46,6 @@ namespace SocialNetwork.ViewModels
         [Required(ErrorMessage = "Никнейм обязательно для заполнения")]
         [DataType(DataType.Text)]
         [Display(Name = "Никнейм", Prompt = "Введите никнейм")]
-        public string Login { get; set; }
+        public string Login => EmailReg;
     }
 }

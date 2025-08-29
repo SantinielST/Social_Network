@@ -31,15 +31,15 @@ namespace SocialNetwork.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var error in errors)
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-                return View(model);
-            }
+            // if (!ModelState.IsValid)
+            // {
+            //     var errors = ModelState.Values.SelectMany(v => v.Errors);
+            //     foreach (var error in errors)
+            //     {
+            //         Console.WriteLine(error.ErrorMessage);
+            //     }
+            //     return View(model);
+            // }
 
             // Получаем пользователя через сервис
             var userEntity = await _userService.GetByEmailAsync(model.Email);
