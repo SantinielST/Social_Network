@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.BLL.Services;
 using SocialNetwork.DLL;
+using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.Entities;
+using SocialNetwork.DLL.Interfaces;
+using SocialNetwork.DLL.UoW;
+using SocialNetwork.BLL.Services;
 
 namespace SocialNetwork;
 
@@ -11,9 +14,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
-        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts => { //Identity §Ù§ß§Ñ§Ö§ä §ä§à§Ý§î§Ü§à §á§â§à UserEntity, §Ñ §ß§Ö §á§â§à User (BLL)
+        builder.Services.AddIdentity<UserEntity, IdentityRole>(opts => { //Identity ï¿½Ù§ß§Ñ§Ö§ï¿½ ï¿½ï¿½ï¿½Ý§ï¿½Ü§ï¿½ ï¿½ï¿½ï¿½ï¿½ UserEntity, ï¿½ï¿½ ï¿½ß§ï¿½ ï¿½ï¿½ï¿½ï¿½ User (BLL)
             opts.Password.RequiredLength = 5;
             opts.Password.RequireNonAlphanumeric = true;
             opts.Password.RequireLowercase = true;
@@ -21,8 +25,12 @@ public class Program
             opts.Password.RequireDigit = true;
         })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders(); //§Õ§Ý§ñ §Ü§å§Ü§Ú
+                .AddDefaultTokenProviders(); //ï¿½Õ§Ý§ï¿½ ï¿½Ü§ï¿½Ü§ï¿½
 
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<FriendService>();
+        builder.Services.AddScoped<IRepository<FriendEntity>, FriendsRepository>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddAutoMapper((v) => v.AddProfile(new MappingProfile()));
         builder.Services.AddScoped<UserService>();
 

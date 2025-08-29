@@ -1,64 +1,60 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
-using SocialNetwork.DLL.Entities;
 using SocialNetwork.ViewModels;
 
+namespace SocialNetwork.Controllers;
 
-namespace SocialNetwork.Controllers
+public class RegisterController : Controller
 {
-    public class RegisterController : Controller
+    private readonly IMapper _mapper; //преобразует ViewModel -> доменная модель User
+
+    private readonly UserService _userService;
+
+    public RegisterController(IMapper mapper, UserService userService)
     {
+        _mapper = mapper;
+        _userService = userService;
+    }
 
-        private readonly IMapper _mapper; //преобразует ViewModel -> доменная модель User
-        private readonly SignInManager<UserEntity> _signInManager;
-        private readonly UserService _userService;
-        // UserManager у нас в сервисах
+    [Route("Register")]
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View("Home/Register");
+    }
 
-        public RegisterController(UserService userService, SignInManager<UserEntity> signInManager, IMapper mapper)
+    [Route("RegisterPart2")]
+    [HttpGet]
+    public IActionResult RegisterPart2(RegisterViewModel model)
+    {
+        return View("RegisterPart2", model);
+    }
+
+    [Route("Register")]
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterViewModel model) //возврат на вторую форму
+    {
+        if (ModelState.IsValid)
         {
-            _userService = userService;
-            _signInManager = signInManager;
-            _mapper = mapper;
-        }
-
-        [Route("Register")]
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View("Home/Register");
-        }
-
-        [Route("RegisterPart2")]
-        [HttpGet]
-        public IActionResult RegisterPart2(RegisterViewModel model)
-        {
-            return View("RegisterPart2", model);
-        }
-
-
-        [Route("Register")]
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid) return View("RegisterPart2", model);
-
             var user = _mapper.Map<User>(model);
-            var result = await _userService.CreateAsync(user, model.PasswordReg);
 
+            var result = await _userService.CreateUserAsync(user, model.PasswordReg);
+            
             if (result.Succeeded)
             {
-                var entity = _mapper.Map<UserEntity>(user); // чтобы SignIn знал, кого логинить
-                await _signInManager.SignInAsync(entity, false);
+                await _userService.SignInAsync(user.Email, false);
                 return RedirectToAction("Index", "Home");
             }
-
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-
-            return View("RegisterPart2", model);
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
         }
+        return View("RegisterPart2", model);
     }
 }

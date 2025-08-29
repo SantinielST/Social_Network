@@ -9,7 +9,7 @@ public class UserViewModel
     public User User { get; set; }
     public List<User> Friends { get; set; } = new();
 
-    public UserViewModel() { } //Model Binding §Ú§ã§á§à§Ý§î§Ù§å§Ö§ä §á§å§ã§ä§à§Û §Ü§à§ß§ã§ä§â§å§Ü§ä§à§â.
+    public UserViewModel() { } //Model Binding ï¿½Ú§ï¿½ï¿½ï¿½Ý§ï¿½Ù§ï¿½Ö§ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü§ï¿½ß§ï¿½ï¿½ï¿½ï¿½Ü§ï¿½ï¿½ï¿½.
 
     public UserViewModel(User user)
     {

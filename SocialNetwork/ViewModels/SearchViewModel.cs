@@ -1,8 +1,8 @@
-using System.Collections;
+using SocialNetwork.BLL.Models;
 
 namespace SocialNetwork.ViewModels;
 
 public class SearchViewModel
 {
-  public List<UserWithFriendExt> UserList { get; set; }
+    public List<UserWithFriendExt> UserList { get; set; }
 }

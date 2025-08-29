@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetwork.BLL.Models;
 
@@ -23,8 +23,8 @@ public class User : IdentityUser
     public string GetFullName()
     {
         return FirstName + " " + MiddleName + " " + LastName;
+ 
     }
-
     public User()
     {
         Image = "https://via.placeholder.com/500";

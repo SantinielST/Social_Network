@@ -28,8 +28,10 @@
 }
 
 .topnav {
+    display: flex;
+    justify-content: space-between; /* Ссылка слева, остальное вправо */
+    align-items: center;
     padding: 20px;
-    text-align: center;
     width: 100%;
 }
 
@@ -63,6 +65,12 @@
     border: none;
     cursor: pointer;
     width: 100%;
+}
+
+.search-container {
+    display: flex;
+    margin-right: 0;
+    float: none;
 }
 
 .enter_submit {
@@ -129,4 +137,8 @@ input[type="checkbox"].input-validation-error {
 
 .date_box {
     width: 100%;
+}
+
+.logout-btn {
+    margin-left: 10px;
 }

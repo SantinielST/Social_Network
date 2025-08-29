@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.DLL.Configurations;
 using SocialNetwork.DLL.Entities;
 
 namespace SocialNetwork.DLL;
@@ -10,6 +11,10 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity>
     {
         Database.EnsureCreated();
     }
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
 
-    public DbSet<UserEntity> userEntities { get; set; }
+        builder.ApplyConfiguration<FriendEntity>(new FriendConfiguration());
+    }
 }
