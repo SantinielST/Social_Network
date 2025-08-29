@@ -1,19 +1,22 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
+using SocialNetwork.DLL.Entities;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers;
 
-public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService) : Controller
+public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService, UserManager<UserEntity> userManager) : Controller
 {
     private readonly IMapper _mapper = mapper;
 
     private readonly UserService _userService = userService;
     private readonly FriendService _friendService = friendService;
+    private readonly UserManager<UserEntity> _userManager = userManager;
 
     [Route("Login")]
     [HttpGet]
@@ -82,11 +85,13 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-            var user = await _userService.GetUserByIdAsync(model.UserId);
+            //var user = await _userService.GetUserWithoutTrackingAsync(model.UserId);
+            var user = await _userManager.FindByIdAsync(model.UserId);
 
             user.Convert(model);
 
-            var result = await _userService.UpdateAsync(user);
+            //var result = await _userService.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
@@ -94,13 +99,14 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
             }
             else
             {
-                return RedirectToAction("Edit", "AccountManager");
+                ModelState.AddModelError("", "Ошибка, обновление не удалось");
+                return RedirectToAction("EditUserProfile", "AccountManager");
             }
         }
         else
         {
             ModelState.AddModelError("", "Некорректные данные");
-            return View("Edit", model);
+            return View("EditUserProfile", model);
         }
     }
 
@@ -111,13 +117,11 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-           var user = _mapper.Map<User>(model);
-
-            var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
+            var result = await _userService.CheckPasswordAsync(model.Email, model.Password);
 
             if (result)
             {
-                await _userService.SignInAsync(user.Email, false);
+                await _userService.SignInAsync(model.Email, false);
                 return RedirectToAction("MyPage", "AccountManager");
             }
             else

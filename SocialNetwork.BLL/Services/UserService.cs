@@ -13,14 +13,48 @@ public class UserService
     private readonly UserManager<UserEntity> _userManager;
     private readonly IMapper _mapper;
     private readonly SignInManager<UserEntity> _signInManager;
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _applicationDbContext;
 
     public UserService(UserManager<UserEntity> userManager, IMapper mapper, SignInManager<UserEntity> signInManager, ApplicationDbContext applicationDbContext)
     {
         _userManager = userManager;
         _mapper = mapper;
         _signInManager = signInManager;
-        _context = applicationDbContext;
+        _applicationDbContext = applicationDbContext;
+    }
+
+    public async Task<User> GetUserWithoutTrackingAsync(string userId)
+    {
+        var userEntity = await _applicationDbContext.Users
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+        return _mapper.Map<User>(userEntity);
+    }
+
+    public async Task<IdentityResult> UpdateUserSafeAsync(string userId, Action<User> updateAction)
+    {
+        // Получаем данные без отслеживания
+        var userInfo = await _applicationDbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => new { u.ConcurrencyStamp })
+            .FirstOrDefaultAsync();
+
+        if (userInfo == null)
+            return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+
+        // Получаем полные данные без отслеживания
+        var userData = await GetUserWithoutTrackingAsync(userId);
+
+        // Применяем изменения
+        updateAction(userData);
+
+        // Важно: обновляем ConcurrencyStamp
+        //userData.ConcurrencyStamp = userInfo.ConcurrencyStamp;
+
+        //// Обновляем через UserManager
+        return await _userManager.UpdateAsync(_mapper.Map<UserEntity>(userData));
     }
 
     public async Task<User?> GetUserAsync(ClaimsPrincipal user)
@@ -63,7 +97,7 @@ public class UserService
 
     public bool IsSignIn(ClaimsPrincipal user)
     {
-        return _signInManager.IsSignedIn(user);
+       return _signInManager.IsSignedIn(user);
     }
 
     public async Task SignOutAsync()
@@ -79,8 +113,6 @@ public class UserService
     public async Task<IdentityResult> UpdateAsync(User user)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
-        _context.Entry(userEntity).State = EntityState.Detached;
-
         return await _userManager.UpdateAsync(userEntity);
     }
 
