@@ -111,7 +111,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-`           var user = _mapper.Map<User>(model);
+           var user = _mapper.Map<User>(model);
 
             var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
 

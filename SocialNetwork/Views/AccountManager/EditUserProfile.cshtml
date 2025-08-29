@@ -11,12 +11,12 @@
     <h3 class="center">Редактирование пользователя</h3>
     <form class="frm" method="post" asp-controller="AccountManager" asp-action="Update">
         <div asp-validation-summary="ModelOnly"></div>
-        <div>
+       @*  <div>
             <div class="mrgn">
                 <input asp-for="UserName" class="form-control" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-        </div>
+        </div> *@
         <div>
             <div class="mrgn">
                 <input asp-for="FirstName" class="form-control" />
@@ -43,8 +43,8 @@
         </div>
         <div>
             <div class="mrgn">
-                <input asp-for="EmailReg" class="form-control" />
-                <span asp-validation-for="EmailReg" class="text-danger"></span>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
         </div>
         <div>
