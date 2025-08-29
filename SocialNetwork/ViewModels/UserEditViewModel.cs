@@ -39,4 +39,6 @@ public class UserEditViewModel
     [DataType(DataType.Text)]
     [Display(Name = "О себе", Prompt = "Введите данные о себе")]
     public string About { get; set; }
+
+    public string? ReturnUrl { get; set; }
 }

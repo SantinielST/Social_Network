@@ -2,7 +2,14 @@
 @using SocialNetwork.BLL.Models
 @inject IHttpContextAccessor HttpContextAccessor
 
-@{
+@if (UserService.IsSignIn(User))
+{
+    <form method="post" asp-controller="AccountManager" asp-action="Logout" class="form-inline">
+        <button type="submit" class="enter_submit">Выход</button>
+    </form>
+}
+
+@* @{
     var userId = HttpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     User currentUser = null;
     if (!string.IsNullOrEmpty(userId))
@@ -11,7 +18,7 @@
     }
 }
 
-<ul class="navbar-nav" style="display: flex;">
+<ul class="navbar-nav">
     @if (currentUser != null)
     {
         <li class="nav-item">
@@ -26,4 +33,4 @@
             </form>
         </li>
     }
-    </ul>
+    </ul> *@

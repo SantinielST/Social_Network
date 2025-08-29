@@ -1,6 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SocialNetwork.BLL.Models;
+using SocialNetwork.DLL;
 using SocialNetwork.DLL.Entities;
 using System.Security.Claims;
 
@@ -11,12 +13,14 @@ public class UserService
     private readonly UserManager<UserEntity> _userManager;
     private readonly IMapper _mapper;
     private readonly SignInManager<UserEntity> _signInManager;
+    private readonly ApplicationDbContext _context;
 
-    public UserService(UserManager<UserEntity> userManager, IMapper mapper, SignInManager<UserEntity> signInManager)
+    public UserService(UserManager<UserEntity> userManager, IMapper mapper, SignInManager<UserEntity> signInManager, ApplicationDbContext applicationDbContext)
     {
         _userManager = userManager;
         _mapper = mapper;
         _signInManager = signInManager;
+        _context = applicationDbContext;
     }
 
     public async Task<User?> GetUserAsync(ClaimsPrincipal user)
@@ -59,7 +63,7 @@ public class UserService
 
     public bool IsSignIn(ClaimsPrincipal user)
     {
-       return _signInManager.IsSignedIn(user);
+        return _signInManager.IsSignedIn(user);
     }
 
     public async Task SignOutAsync()
@@ -74,7 +78,10 @@ public class UserService
 
     public async Task<IdentityResult> UpdateAsync(User user)
     {
-       return await _userManager.UpdateAsync(_mapper.Map<UserEntity>(user));
+        var userEntity = _mapper.Map<UserEntity>(user);
+        _context.Entry(userEntity).State = EntityState.Detached;
+
+        return await _userManager.UpdateAsync(userEntity);
     }
 
     public List<User> GetUsersForSearch(string search)

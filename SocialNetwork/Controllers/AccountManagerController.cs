@@ -41,7 +41,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         model.Friends = _friendService.GetFriendsByUser(model.User);
 
-        return View("User", model);
+        return View("MyPage", model);
     }
 
     //private async Task<List<User>> GetAllFriend(User user)
@@ -72,7 +72,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         var editmodel = _mapper.Map<UserEditViewModel>(result.Result);
 
-        return View("Edit", editmodel);
+        return View("EditUserProfile", editmodel);
     }
 
     [Authorize]
