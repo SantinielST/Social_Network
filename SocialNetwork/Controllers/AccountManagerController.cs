@@ -1,22 +1,19 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
-using SocialNetwork.DLL.Entities;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers;
 
-public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService, UserManager<UserEntity> userManager) : Controller
+public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService) : Controller
 {
     private readonly IMapper _mapper = mapper;
 
     private readonly UserService _userService = userService;
     private readonly FriendService _friendService = friendService;
-    private readonly UserManager<UserEntity> _userManager = userManager;
 
     [Route("Login")]
     [HttpGet]
@@ -47,24 +44,6 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
         return View("MyPage", model);
     }
 
-    //private async Task<List<User>> GetAllFriend(User user)
-    //{
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(user);
-    //}
-
-    //private async Task<List<UserEntity>> GetAllFriend()
-    //{
-    //    var user = User;
-
-    //    var result = await _userManager.GetUserAsync(user);
-
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(result);
-    //}
-
     [Route("Edit")]
     [HttpGet]
     public IActionResult Edit()
@@ -85,13 +64,9 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-            //var user = await _userService.GetUserWithoutTrackingAsync(model.UserId);
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = new User().Convert(model);
 
-            user.Convert(model);
-
-            //var result = await _userService.UpdateAsync(user);
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.UpdateAsync(user, model.UserId);
 
             if (result.Succeeded)
             {
@@ -100,7 +75,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
             else
             {
                 ModelState.AddModelError("", "Ошибка, обновление не удалось");
-                return RedirectToAction("EditUserProfile", "AccountManager");
+                return RedirectToAction("Edit", "AccountManager");
             }
         }
         else
@@ -153,12 +128,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [HttpPost]
     public async Task<IActionResult> AddFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.AddFriend(result, friend);
+        _friendService.AddFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -167,12 +137,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [HttpPost]
     public async Task<IActionResult> DeleteFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.DeleteFriend(result, friend);
+        _friendService.DeleteFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -183,7 +148,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         var result = await _userService.GetUserAsync(currentuser);
 
-        var list = _userService.GetUsersForSearch(search);/* _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();*/
+        var list = _userService.GetUsersForSearch(search, result.Id);
 
         var withfriend = _friendService.GetFriendsByUser(result);
 

@@ -2,11 +2,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetwork.BLL.Models;
 
-public class User
+public class User : IdentityUser
 {
     //IdentityUser уже содержит собственное поле Id (string Id) и Email (EmailReg).
-
-    public string Id {  get; set; }
 
     public string FirstName { get; set; }
 
