@@ -6,7 +6,6 @@ using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
-using UserWithFriendExt = SocialNetwork.ViewModels.UserWithFriendExt;
 
 namespace SocialNetwork.Controllers;
 
@@ -59,8 +58,8 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
     [HttpPost]
     public async Task<IActionResult> Update(UserEditViewModel model)
     {
-        // if (ModelState.IsValid)
-        // {
+        if (ModelState.IsValid)
+         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetUserByIdAsync(userId);
 
@@ -74,14 +73,15 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
             }
             else
             {
+                ModelState.AddModelError("", "Ошибка, обновление не удалось");
                 return RedirectToAction("Edit", "AccountManager");
             }
-        // }
-        // else
-        // {
-        //     ModelState.AddModelError("", "Некорректные данные");
-        //     return View("EditUserProfile", model);
-        // }
+        }
+        else
+        {
+            ModelState.AddModelError("", "Некорректные данные");
+            return View("EditUserProfile", model);
+        }
     }
 
     [Route("Login")]
@@ -89,8 +89,8 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        //if (ModelState.IsValid)
-        //{
+        if (ModelState.IsValid)
+        {
            var user = _mapper.Map<User>(model);
 
             var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
@@ -104,7 +104,7 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
             {
                 ModelState.AddModelError("", "Неправильный логин и (или) пароль");
             }
-        //}
+        }
         return RedirectToAction("Index", "Home");
     }
 
@@ -129,12 +129,7 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
     [HttpPost]
     public async Task<IActionResult> AddFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.AddFriend(result, friend);
+        _friendService.AddFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -143,12 +138,7 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
     [HttpPost]
     public async Task<IActionResult> DeleteFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.DeleteFriend(result, friend);
+        _friendService.DeleteFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -159,7 +149,7 @@ public class AccountManagerController(IMapper _mapper, UserService _userService,
 
         var result = await _userService.GetUserAsync(currentuser);
 
-        var list = _userService.GetUsersForSearch(search);/* _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();*/
+        var list = _userService.GetUsersForSearch(search, result.Id);
 
         var withfriend = _friendService.GetFriendsByUser(result);
 

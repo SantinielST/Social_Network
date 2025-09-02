@@ -19,7 +19,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.EmailReg))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(c => c.Login));
 
-        CreateMap<LoginViewModel, User>()
+        CreateMap<LoginViewModel, UserEntity>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
 

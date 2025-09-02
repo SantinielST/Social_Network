@@ -1,5 +1,13 @@
 ﻿@inject SocialNetwork.BLL.Services.UserService UserService
+@using SocialNetwork.BLL.Models
 @inject IHttpContextAccessor HttpContextAccessor
+
+@if (UserService.IsSignIn(User))
+{
+    <form method="post" asp-controller="AccountManager" asp-action="Logout" class="form-inline">
+        <button type="submit" class="enter_submit">Выход</button>
+    </form>
+}
 
 @{
     var userId = HttpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
