@@ -15,6 +15,11 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity>
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfiguration<FriendEntity>(new FriendConfiguration());
+        builder.ApplyConfiguration(new FriendConfiguration());
+
+        // Конфигурация для UserEntity
+        builder.Entity<UserEntity>()
+            .Property(u => u.BirthDate)
+            .HasColumnType("timestamp without time zone");
     }
 }

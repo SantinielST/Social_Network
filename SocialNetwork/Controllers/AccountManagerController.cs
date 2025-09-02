@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,16 +6,12 @@ using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
+using UserWithFriendExt = SocialNetwork.ViewModels.UserWithFriendExt;
 
 namespace SocialNetwork.Controllers;
 
-public class AccountManagerController(IMapper mapper, UserService userService, FriendService friendService) : Controller
+public class AccountManagerController(IMapper _mapper, UserService _userService, FriendService _friendService) : Controller
 {
-    private readonly IMapper _mapper = mapper;
-
-    private readonly UserService _userService = userService;
-    private readonly FriendService _friendService = friendService;
-
     [Route("Login")]
     [HttpGet]
     public IActionResult Login()
@@ -41,26 +38,8 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         model.Friends = _friendService.GetFriendsByUser(model.User);
 
-        return View("User", model);
+        return View("MyPage", model);
     }
-
-    //private async Task<List<User>> GetAllFriend(User user)
-    //{
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(user);
-    //}
-
-    //private async Task<List<UserEntity>> GetAllFriend()
-    //{
-    //    var user = User;
-
-    //    var result = await _userManager.GetUserAsync(user);
-
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(result);
-    //}
 
     [Route("Edit")]
     [HttpGet]
@@ -72,7 +51,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         var editmodel = _mapper.Map<UserEditViewModel>(result.Result);
 
-        return View("Edit", editmodel);
+        return View("EditUserProfile", editmodel);
     }
 
     [Authorize]
@@ -80,9 +59,10 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [HttpPost]
     public async Task<IActionResult> Update(UserEditViewModel model)
     {
-        if (ModelState.IsValid)
-        {
-            var user = await _userService.GetUserByIdAsync(model.UserId);
+        // if (ModelState.IsValid)
+        // {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetUserByIdAsync(userId);
 
             user.Convert(model);
 
@@ -96,12 +76,12 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
             {
                 return RedirectToAction("Edit", "AccountManager");
             }
-        }
-        else
-        {
-            ModelState.AddModelError("", "Некорректные данные");
-            return View("Edit", model);
-        }
+        // }
+        // else
+        // {
+        //     ModelState.AddModelError("", "Некорректные данные");
+        //     return View("EditUserProfile", model);
+        // }
     }
 
     [Route("Login")]
@@ -109,9 +89,9 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (ModelState.IsValid)
-        {
-`           var user = _mapper.Map<User>(model);
+        //if (ModelState.IsValid)
+        //{
+           var user = _mapper.Map<User>(model);
 
             var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
 
@@ -124,7 +104,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
             {
                 ModelState.AddModelError("", "Неправильный логин и (или) пароль");
             }
-        }
+        //}
         return RedirectToAction("Index", "Home");
     }
 

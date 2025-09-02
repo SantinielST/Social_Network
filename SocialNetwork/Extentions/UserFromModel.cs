@@ -13,7 +13,7 @@ public static class UserFromModel
         user.FirstName = usereditvm.FirstName;
         user.Email = usereditvm.Email;
         user.BirthDate = usereditvm.BirthDate;
-        user.UserName = usereditvm.UserName;
+        user.UserName = usereditvm.MiddleName;
         user.Status = usereditvm.Status;
         user.About = usereditvm.About;
 

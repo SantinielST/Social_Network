@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL.Entities;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace SocialNetwork.BLL.Services;
 
@@ -27,7 +28,10 @@ public class UserService
 
     public async Task<User?> GetUserByIdAsync(string id)
     {
-        var userEntity = await _userManager.FindByIdAsync(id);
+        var userEntity = await _userManager.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
         return userEntity != null ? _mapper.Map<User>(userEntity) : null;
     }
 
@@ -74,7 +78,9 @@ public class UserService
 
     public async Task<IdentityResult> UpdateAsync(User user)
     {
-       return await _userManager.UpdateAsync(_mapper.Map<UserEntity>(user));
+        var userEntity = await _userManager.FindByIdAsync(user.Id); // трекаемый объект
+        _mapper.Map(user, userEntity); // обновляем свойства существующего объекта
+        return await _userManager.UpdateAsync(userEntity);
     }
 
     public List<User> GetUsersForSearch(string search)

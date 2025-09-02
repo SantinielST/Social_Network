@@ -1,5 +1,4 @@
-@inject SocialNetwork.BLL.Services.UserService UserService
-@using SocialNetwork.BLL.Models
+﻿@inject SocialNetwork.BLL.Services.UserService UserService
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -7,7 +6,7 @@
     User currentUser = null;
     if (!string.IsNullOrEmpty(userId))
     {
-        currentUser = await UserService.GetByIdAsync(userId);
+        currentUser = await UserService.GetUserByIdAsync(userId);
     }
 }
 
@@ -26,13 +25,4 @@
             </form>
         </li>
     }
-  @*   else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    } *@
 </ul>
