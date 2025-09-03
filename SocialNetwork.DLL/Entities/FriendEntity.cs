@@ -8,5 +8,5 @@ public class FriendEntity
 
     public string CurrentFriendId { get; set; }
 
-    public UserEntity CurrentFriend { get; set; }
+    public UserEntity CurrentFriend { get; set; } //навигационное свойство, которое EF Core связывает с объектом UserEntity
 }

@@ -1,7 +1,7 @@
 ﻿namespace SocialNetwork.DLL.Interfaces;
 
 public interface IRepository<T> where T : class //IRepository описывает CRUD-операции для наших моделей.
-    //В Identity все CRUD-операции над пользователями уже реализованы, и мы можем просто их вызывать.
+    //В Identity все CRUD-операции над пользователями уже реализованы, и мы можем просто их вызывать. Нужен для наших сущностей, например, Friend
 {
     IEnumerable<T> GetAll();
     T Get(int id);

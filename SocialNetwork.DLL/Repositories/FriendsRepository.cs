@@ -11,18 +11,18 @@ public class FriendsRepository : Repository<FriendEntity>
 
     }
 
-    public void AddFriend(UserEntity target, UserEntity Friend)
+    public void AddFriend(UserEntity target, UserEntity friend)
     {
-        var friends = Set.AsEnumerable().FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == Friend.Id);
+        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
-        if (friends == null)
+        if (existing == null)
         {
             var item = new FriendEntity()
             {
                 UserId = target.Id,
                 User = target,
-                CurrentFriend = Friend,
-                CurrentFriendId = Friend.Id,
+                CurrentFriend = friend,
+                CurrentFriendId = friend.Id,
             };
 
             Create(item);
@@ -38,11 +38,11 @@ public class FriendsRepository : Repository<FriendEntity>
 
     public void DeleteFriend(UserEntity target, UserEntity friend)
     {
-        var friends = Set.AsEnumerable().FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
+        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
-        if (friends != null)
+        if (existing != null)
         {
-            Delete(friends);
+            Delete(existing);
         }
     }
 }

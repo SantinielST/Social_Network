@@ -31,5 +31,8 @@ public class MappingProfile : Profile
 
         CreateMap<UserWithFriendExt, User>();
         CreateMap<User, UserWithFriendExt>();
+        
+        CreateMap<Message, MessageEntity>();
+        CreateMap<MessageEntity, Message>();
     }
 }

@@ -47,6 +47,10 @@ public class UserService
     public async Task<IdentityResult> CreateUserAsync(User user, string password)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
+
+        // сбрасываем Kind именно у entity, которое уходит в БД
+        userEntity.BirthDate = DateTime.SpecifyKind(userEntity.BirthDate, DateTimeKind.Unspecified);
+
         return await _userManager.CreateAsync(userEntity, password);
     }
 
@@ -82,23 +86,30 @@ public class UserService
     public async Task<IdentityResult> UpdateAsync(User user)
     {
         var userEntity = await _userManager.FindByIdAsync(user.Id); // трекаемый объект
-        _mapper.Map(user, userEntity); // обновляем свойства существующего объекта
+        _mapper.Map(user, userEntity); // обновляем свойства существующего объекта, убрала ручной маппинг
         return await _userManager.UpdateAsync(userEntity);
     }
 
-    public List<User> GetUsersForSearch(string search, string Id)
+    public List<User> GetUsersForSearch(string search, string currentUserId)
     {
-        var userListEntity = new List<UserEntity>();
+        IQueryable<UserEntity> query = _userManager.Users;
 
-        if (string.IsNullOrEmpty(search))
+        // исключаем текущего пользователя
+        query = query.Where(u => u.Id != currentUserId);
+
+        if (!string.IsNullOrEmpty(search))
         {
-            userListEntity = _userManager.Users.AsEnumerable().Where(u => u.Id != Id).ToList();
-        }
-        else
-        {
-            userListEntity = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
+            search = search.ToLower();
+
+            query = query.Where(u =>
+                EF.Functions.ILike(u.FirstName, $"%{search}%") ||
+                EF.Functions.ILike(u.LastName, $"%{search}%") ||
+                (u.MiddleName != null && EF.Functions.ILike(u.MiddleName, $"%{search}%"))
+            );
         }
 
-        return [.. userListEntity.Select(u => _mapper.Map<User>(u))];
+        var userListEntity = query.ToList();
+
+        return userListEntity.Select(u => _mapper.Map<User>(u)).ToList();
     }
 }

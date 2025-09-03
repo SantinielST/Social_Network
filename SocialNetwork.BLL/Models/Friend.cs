@@ -1,6 +1,7 @@
 ﻿namespace SocialNetwork.BLL.Models;
 
-public class Friend
+public class Friend //DTO для передачи данных в сервисах, API или контроллерах.
+                    //Использует User из BLL, а не UserEntity.
 {
     public int Id { get; set; }
     public string UserId { get; set; }
