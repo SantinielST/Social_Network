@@ -12,9 +12,12 @@
         {
             <div>
                 <label>@user.GetFullName()</label>
-                @if (!@user.IsFriendWithCurrent)
+                @if (user.User != null && !user.IsFriendWithCurrent)
                 {
-                    <form asp-controller="AccountManager" asp-action="AddFriend" asp-route-id="@user.Id" method="post">
+                    <form asp-controller="AccountManager"
+                          asp-action="AddFriend"
+                          asp-route-id="@user.User.Id"
+                          method="post">
                         <button type="submit" class="btn btn-sm btn-primary">
                             Добавить в друзья
                         </button>

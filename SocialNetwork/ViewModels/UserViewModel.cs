@@ -9,7 +9,7 @@ public class UserViewModel
     public User User { get; set; }
     public List<User> Friends { get; set; } = new();
 
-    public UserViewModel() { } //Model Binding �ڧ���ݧ�٧�֧� ������� �ܧ�ߧ����ܧ���.
+    public UserViewModel() { } //для автом. Model Binding нужен пустой конструктор.
 
     public UserViewModel(User user)
     {

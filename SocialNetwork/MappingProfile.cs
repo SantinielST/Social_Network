@@ -2,6 +2,7 @@
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL.Entities;
 using SocialNetwork.ViewModels;
+using UserWithFriendExt = SocialNetwork.BLL.Models.UserWithFriendExt;
 
 public class MappingProfile : Profile
 {
@@ -30,5 +31,8 @@ public class MappingProfile : Profile
 
         CreateMap<UserWithFriendExt, User>();
         CreateMap<User, UserWithFriendExt>();
+        
+        CreateMap<Message, MessageEntity>();
+        CreateMap<MessageEntity, Message>();
     }
 }

@@ -1,4 +1,4 @@
-@inject SocialNetwork.BLL.Services.UserService UserService
+﻿@inject SocialNetwork.BLL.Services.UserService UserService
 @using SocialNetwork.BLL.Models
 @inject IHttpContextAccessor HttpContextAccessor
 
@@ -7,30 +7,4 @@
     <form method="post" asp-controller="AccountManager" asp-action="Logout" class="form-inline">
         <button type="submit" class="enter_submit">Выход</button>
     </form>
-}
-
-@* @{
-    var userId = HttpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-    User currentUser = null;
-    if (!string.IsNullOrEmpty(userId))
-    {
-        currentUser = await UserService.GetUserByIdAsync(userId);
-    }
-}
-
-<ul class="navbar-nav">
-    @if (currentUser != null)
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                Hello @currentUser.FirstName!
-            </a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
-                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>
-    }
-    </ul> *@
+};

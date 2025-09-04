@@ -4,6 +4,7 @@ using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL;
 using SocialNetwork.DLL.Entities;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace SocialNetwork.BLL.Services;
 
@@ -30,7 +31,10 @@ public class UserService
 
     public async Task<User?> GetUserByIdAsync(string id)
     {
-        var userEntity = await _userManager.FindByIdAsync(id);
+        var userEntity = await _userManager.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
         return userEntity != null ? _mapper.Map<User>(userEntity) : null;
     }
 
@@ -43,6 +47,10 @@ public class UserService
     public async Task<IdentityResult> CreateUserAsync(User user, string password)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
+
+        // сбрасываем Kind именно у entity, которое уходит в БД
+        userEntity.BirthDate = DateTime.SpecifyKind(userEntity.BirthDate, DateTimeKind.Unspecified);
+
         return await _userManager.CreateAsync(userEntity, password);
     }
 
@@ -75,35 +83,33 @@ public class UserService
         return await _userManager.FindByEmailAsync(email);
     }
 
-    public async Task<IdentityResult> UpdateAsync(User userFromModel, string Id)
+    public async Task<IdentityResult> UpdateAsync(User user)
     {
-        var userEntity = await _userManager.FindByIdAsync(Id);
-
-        userEntity.Image = userFromModel.Image;
-        userEntity.LastName = userFromModel.LastName;
-        userEntity.FirstName = userFromModel.FirstName;
-        userEntity.MiddleName = userFromModel.MiddleName;
-        userEntity.Email = userFromModel.Email;
-        userEntity.UserName = userFromModel.Email;
-        userEntity.Status = userFromModel.Status;
-        userEntity.About = userFromModel.About;
-
+        var userEntity = await _userManager.FindByIdAsync(user.Id); // трекаемый объект
+        _mapper.Map(user, userEntity); // обновляем свойства существующего объекта, убрала ручной маппинг
         return await _userManager.UpdateAsync(userEntity);
     }
 
-    public List<User> GetUsersForSearch(string search, string Id)
+    public List<User> GetUsersForSearch(string search, string currentUserId)
     {
-        var userListEntity = new List<UserEntity>();
+        IQueryable<UserEntity> query = _userManager.Users;
 
-        if (string.IsNullOrEmpty(search))
+        // исключаем текущего пользователя
+        query = query.Where(u => u.Id != currentUserId);
+
+        if (!string.IsNullOrEmpty(search))
         {
-            userListEntity = _userManager.Users.AsEnumerable().Where(u => u.Id != Id).ToList();
-        }
-        else
-        {
-            userListEntity = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
+            search = search.ToLower();
+
+            query = query.Where(u =>
+                EF.Functions.ILike(u.FirstName, $"%{search}%") ||
+                EF.Functions.ILike(u.LastName, $"%{search}%") ||
+                (u.MiddleName != null && EF.Functions.ILike(u.MiddleName, $"%{search}%"))
+            );
         }
 
-        return [.. userListEntity.Select(u => _mapper.Map<User>(u))];
+        var userListEntity = query.ToList();
+
+        return userListEntity.Select(u => _mapper.Map<User>(u)).ToList();
     }
 }

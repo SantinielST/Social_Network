@@ -8,11 +8,8 @@ using System.Security.Claims;
 
 namespace SocialNetwork.BLL.Services;
 
-public class FriendService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<UserEntity> userManager)
+public class FriendService(IUnitOfWork _unitOfWork, IMapper _mapper, UserManager<UserEntity> _userManager)
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
-    private readonly UserManager<UserEntity> _userManager = userManager;
 
     public List<User> GetFriendsByUser(User user)
     {
