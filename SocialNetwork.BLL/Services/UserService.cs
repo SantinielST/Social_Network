@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.BLL.Models;
+using SocialNetwork.DLL;
 using SocialNetwork.DLL.Entities;
 using System.Security.Claims;
 
@@ -11,12 +12,14 @@ public class UserService
     private readonly UserManager<UserEntity> _userManager;
     private readonly IMapper _mapper;
     private readonly SignInManager<UserEntity> _signInManager;
+    private readonly ApplicationDbContext _applicationDbContext;
 
-    public UserService(UserManager<UserEntity> userManager, IMapper mapper, SignInManager<UserEntity> signInManager)
+    public UserService(UserManager<UserEntity> userManager, IMapper mapper, SignInManager<UserEntity> signInManager, ApplicationDbContext applicationDbContext)
     {
         _userManager = userManager;
         _mapper = mapper;
         _signInManager = signInManager;
+        _applicationDbContext = applicationDbContext;
     }
 
     public async Task<User?> GetUserAsync(ClaimsPrincipal user)
@@ -59,7 +62,7 @@ public class UserService
 
     public bool IsSignIn(ClaimsPrincipal user)
     {
-       return _signInManager.IsSignedIn(user);
+        return _signInManager.IsSignedIn(user);
     }
 
     public async Task SignOutAsync()
@@ -72,14 +75,34 @@ public class UserService
         return await _userManager.FindByEmailAsync(email);
     }
 
-    public async Task<IdentityResult> UpdateAsync(User user)
+    public async Task<IdentityResult> UpdateAsync(User userFromModel, string Id)
     {
-       return await _userManager.UpdateAsync(_mapper.Map<UserEntity>(user));
+        var userEntity = await _userManager.FindByIdAsync(Id);
+
+        userEntity.Image = userFromModel.Image;
+        userEntity.LastName = userFromModel.LastName;
+        userEntity.FirstName = userFromModel.FirstName;
+        userEntity.MiddleName = userFromModel.MiddleName;
+        userEntity.Email = userFromModel.Email;
+        userEntity.UserName = userFromModel.Email;
+        userEntity.Status = userFromModel.Status;
+        userEntity.About = userFromModel.About;
+
+        return await _userManager.UpdateAsync(userEntity);
     }
 
-    public List<User> GetUsersForSearch(string search)
+    public List<User> GetUsersForSearch(string search, string Id)
     {
-        var userListEntity = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
+        var userListEntity = new List<UserEntity>();
+
+        if (string.IsNullOrEmpty(search))
+        {
+            userListEntity = _userManager.Users.AsEnumerable().Where(u => u.Id != Id).ToList();
+        }
+        else
+        {
+            userListEntity = _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();
+        }
 
         return [.. userListEntity.Select(u => _mapper.Map<User>(u))];
     }

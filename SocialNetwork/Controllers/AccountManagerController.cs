@@ -41,26 +41,8 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         model.Friends = _friendService.GetFriendsByUser(model.User);
 
-        return View("User", model);
+        return View("MyPage", model);
     }
-
-    //private async Task<List<User>> GetAllFriend(User user)
-    //{
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(user);
-    //}
-
-    //private async Task<List<UserEntity>> GetAllFriend()
-    //{
-    //    var user = User;
-
-    //    var result = await _userManager.GetUserAsync(user);
-
-    //    var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
-
-    //    return repository.GetFriendsByUser(result);
-    //}
 
     [Route("Edit")]
     [HttpGet]
@@ -72,7 +54,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         var editmodel = _mapper.Map<UserEditViewModel>(result.Result);
 
-        return View("Edit", editmodel);
+        return View("EditUserProfile", editmodel);
     }
 
     [Authorize]
@@ -82,11 +64,9 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-            var user = await _userService.GetUserByIdAsync(model.UserId);
+            var user = new User().Convert(model);
 
-            user.Convert(model);
-
-            var result = await _userService.UpdateAsync(user);
+            var result = await _userService.UpdateAsync(user, model.UserId);
 
             if (result.Succeeded)
             {
@@ -94,13 +74,14 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
             }
             else
             {
+                ModelState.AddModelError("", "Ошибка, обновление не удалось");
                 return RedirectToAction("Edit", "AccountManager");
             }
         }
         else
         {
             ModelState.AddModelError("", "Некорректные данные");
-            return View("Edit", model);
+            return View("EditUserProfile", model);
         }
     }
 
@@ -111,13 +92,11 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     {
         if (ModelState.IsValid)
         {
-`           var user = _mapper.Map<User>(model);
-
-            var result = await _userService.CheckPasswordAsync(user.Email, model.Password);
+            var result = await _userService.CheckPasswordAsync(model.Email, model.Password);
 
             if (result)
             {
-                await _userService.SignInAsync(user.Email, false);
+                await _userService.SignInAsync(model.Email, false);
                 return RedirectToAction("MyPage", "AccountManager");
             }
             else
@@ -149,12 +128,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [HttpPost]
     public async Task<IActionResult> AddFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.AddFriend(result, friend);
+        _friendService.AddFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -163,12 +137,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
     [HttpPost]
     public async Task<IActionResult> DeleteFriend(string id)
     {
-        var currentuser = User;
-
-        var result = await _userService.GetUserAsync(currentuser);
-        var friend = await _userService.GetUserByIdAsync(id);
-
-        _friendService.DeleteFriend(result, friend);
+        _friendService.DeleteFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -179,7 +148,7 @@ public class AccountManagerController(IMapper mapper, UserService userService, F
 
         var result = await _userService.GetUserAsync(currentuser);
 
-        var list = _userService.GetUsersForSearch(search);/* _userManager.Users.AsEnumerable().Where(x => x.GetFullName().ToLower().Contains(search.ToLower())).ToList();*/
+        var list = _userService.GetUsersForSearch(search, result.Id);
 
         var withfriend = _friendService.GetFriendsByUser(result);
 

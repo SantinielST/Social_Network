@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL.Entities;
 using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.UoW;
+using System.Security.Claims;
 
 namespace SocialNetwork.BLL.Services;
 
-public class FriendService(IUnitOfWork unitOfWork, IMapper mapper)
+public class FriendService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<UserEntity> userManager)
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
+    private readonly UserManager<UserEntity> _userManager = userManager;
 
     public List<User> GetFriendsByUser(User user)
     {
@@ -21,17 +24,23 @@ public class FriendService(IUnitOfWork unitOfWork, IMapper mapper)
         return [.. listUsersEntity.Select(u => _mapper.Map<User>(u))];
     }
 
-    public void AddFriend(User user, User friend)
+    public void AddFriend(ClaimsPrincipal userRequester, string friendId)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        repository.AddFriend(_mapper.Map<UserEntity>(user), mapper.Map<UserEntity>(friend));
+        var user = _userManager.GetUserAsync(userRequester).Result;
+        var friend = _userManager.FindByIdAsync(friendId).Result;
+
+        repository.AddFriend(user, friend);
     }
 
-    public void DeleteFriend(User user, User friend)
+    public void DeleteFriend(ClaimsPrincipal userRequester, string friendId)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        repository.DeleteFriend(_mapper.Map<UserEntity>(user), _mapper.Map<UserEntity>(friend));
+        var user = _userManager.GetUserAsync(userRequester).Result;
+        var friend = _userManager.FindByIdAsync(friendId).Result;
+
+        repository.DeleteFriend(user, friend);
     }
 }

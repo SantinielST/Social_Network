@@ -24,7 +24,7 @@ public class UserEditViewModel
     [Display(Name = "Дата рождения")]
     public DateTime BirthDate { get; set; }
 
-    DataType(DataType.Text)]
+    [DataType(DataType.Text)]
     [Display(Name = "Отчество", Prompt = "Введите отчество")]
     public string MiddleName { get; set; }
   
@@ -39,4 +39,6 @@ public class UserEditViewModel
     [DataType(DataType.Text)]
     [Display(Name = "О себе", Prompt = "Введите данные о себе")]
     public string About { get; set; }
+
+    public string? ReturnUrl { get; set; }
 }

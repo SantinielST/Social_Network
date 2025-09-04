@@ -45,7 +45,7 @@ public class RegisterController : Controller
             if (result.Succeeded)
             {
                 await _userService.SignInAsync(user.Email, false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("MyPage", "AccountManager");
             }
             else
             {
