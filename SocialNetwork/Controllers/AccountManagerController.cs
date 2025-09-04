@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using SocialNetwork.DLL.Repositories;
 using SocialNetwork.DLL.UoW;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
+using System.Security.Claims;
 
 namespace SocialNetwork.Controllers;
 
@@ -24,7 +24,7 @@ public class AccountManagerController(
 {
     [HttpGet]
     [Route("Login")]
-    public IActionResult Login(string returnUrl = null) 
+    public IActionResult Login(string returnUrl = null)
     {
         if (User.Identity is { IsAuthenticated: true })
         {
@@ -35,7 +35,7 @@ public class AccountManagerController(
         // иначе показываем страницу входа
         return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
-    
+
     [Route("Login")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -55,7 +55,7 @@ public class AccountManagerController(
         }
         return RedirectToAction("Index", "Home");
     }
-    
+
     [Route("Logout")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -167,10 +167,6 @@ public class AccountManagerController(
             // Проверка дружбы
             t.IsFriendWithCurrent = friends.Any(y => y.Id == x.Id || x.Id == currentUserEntity.Id);
 
-            // Безопасный full name для вьюхи
-            t.FullName = string.Join(" ", new[] { x.LastName, x.FirstName, x.MiddleName }
-                .Where(s => !string.IsNullOrEmpty(s)));
-
             return t;
         }).ToList();
 
@@ -251,5 +247,5 @@ public class AccountManagerController(
         var model = await GenerateChat(id);
         return View("Chat", model);
     }
-    
+
 }

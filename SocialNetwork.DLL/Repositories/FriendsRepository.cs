@@ -4,13 +4,8 @@ using SocialNetwork.DLL.Repositories.Base;
 
 namespace SocialNetwork.DLL.Repositories;
 
-public class FriendsRepository : Repository<FriendEntity>
+public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntity>(db)
 {
-    public FriendsRepository(ApplicationDbContext db) : base(db)
-    {
-
-    }
-
     public void AddFriend(UserEntity target, UserEntity friend)
     {
         var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);

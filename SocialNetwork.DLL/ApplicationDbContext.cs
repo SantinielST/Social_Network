@@ -15,7 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity>
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfiguration(new FriendConfiguration());
+        builder.ApplyConfiguration<FriendEntity>(new FriendConfiguration());
 
         // Конфигурация для UserEntity
         builder.Entity<UserEntity>()

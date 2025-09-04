@@ -21,10 +21,18 @@ public class Repository<T> : IRepository<T> where T : class
 
         Set = set;
     }
-    
-    public void Create(T item) => Set.Add(item);
-    public void Delete(T item) => Set.Remove(item);
-    public void Update(T item) => Set.Update(item);
+
+    public void Create(T item)
+    {
+        Set.Add(item);
+        _db.SaveChanges();
+    }
+
+    public void Delete(T item)
+    {
+        Set.Remove(item);
+        _db.SaveChanges();
+    }
 
     public T Get(int id)
     {
@@ -35,5 +43,10 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return Set;
     }
-    
+
+    public void Update(T item)
+    {
+        Set.Update(item);
+        _db.SaveChanges();
+    }
 }
