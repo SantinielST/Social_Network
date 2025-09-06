@@ -18,8 +18,7 @@ public class AccountManagerController(
     IMapper mapper,
     UserService userService,
     FriendService friendService,
-    UserManager<UserEntity> userManager,
-    IUnitOfWork unitOfWork)
+    MessageService messageService)
     : Controller
 {
     [HttpGet]
@@ -135,7 +134,7 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> AddFriend(string id)
     {
-        friendService.AddFriend(User, id);
+        await friendService.AddFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -144,7 +143,7 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> DeleteFriend(string id)
     {
-        friendService.DeleteFriend(User, id);
+        await friendService.DeleteFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -188,23 +187,13 @@ public class AccountManagerController(
 
     private async Task<ChatViewModel> GenerateChat(string id)
     {
-        // Получаем DAL-сущности
-        var currentUserEntity = await userManager.GetUserAsync(User);
-        var friendEntity = await userManager.FindByIdAsync(id);
-
-        // Маппим в BLL-модели
-        var currentUser = mapper.Map<User>(currentUserEntity);
-        var friend = mapper.Map<User>(friendEntity);
-
-        // Берем сообщения
-        var repository = unitOfWork.GetRepository<Message>() as MessageRepository;
-        var messages = repository.GetMessages(currentUserEntity, friendEntity); // здесь можно оставить DAL-сущности
+        var result = await messageService.GetMessagesAsync(User, id);
 
         var model = new ChatViewModel
         {
-            You = currentUser,
-            ToWhom = friend,
-            History = messages.Select(m => mapper.Map<Message>(m)).OrderBy(x => x.Id).ToList()
+            You = result.Item2,
+            ToWhom = result.Item3,
+            History = result.Item1.OrderBy(x => x.Id).ToList()
         };
 
         return model;
@@ -214,10 +203,9 @@ public class AccountManagerController(
     [HttpGet]
     public async Task<IActionResult> Chat()
     {
-
         var id = Request.Query["id"];
-
         var model = await GenerateChat(id);
+
         return View("Chat", model);
     }
 
@@ -225,27 +213,10 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> NewMessage(string id, ChatViewModel chat)
     {
-        var currentUserEntity = await userManager.GetUserAsync(User);
-        var friendEntity = await userManager.FindByIdAsync(id);
-
-        // Создаем сообщение (DAL)
-        var repository = unitOfWork.GetRepository<Message>() as MessageRepository;
-        var sender = mapper.Map<User>(currentUserEntity);
-        var recipient = mapper.Map<User>(friendEntity);
-        var item = new Message
-        {
-            Sender = sender,
-            Recipient = recipient,
-            Text = chat.NewMessage.Text
-        };
-        // Map BLL Message to DAL MessageEntity before saving
-        var messageEntity = mapper.Map<MessageEntity>(item);
-        repository?.Create(messageEntity);
-        unitOfWork.SaveChanges();
+        await messageService.NewMessageAsync(User, chat.NewMessage.Text, id);
 
         // Генерируем обновленный чат (BLL-модели)
         var model = await GenerateChat(id);
         return View("Chat", model);
     }
-
 }

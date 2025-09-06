@@ -6,9 +6,9 @@ namespace SocialNetwork.DLL.Repositories;
 
 public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntity>(db)
 {
-    public void AddFriend(UserEntity target, UserEntity friend)
+    public async Task AddFriend(UserEntity target, UserEntity friend)
     {
-        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
+        var existing = await Set.FirstOrDefaultAsync(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
         if (existing == null)
         {
@@ -20,7 +20,7 @@ public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntit
                 CurrentFriendId = friend.Id,
             };
 
-            Create(item);
+            await Create(item);
         }
     }
 
@@ -31,13 +31,13 @@ public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntit
         return friends.ToList();
     }
 
-    public void DeleteFriend(UserEntity target, UserEntity friend)
+    public async Task DeleteFriend(UserEntity target, UserEntity friend)
     {
-        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
+        var existing = await Set.FirstOrDefaultAsync(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
         if (existing != null)
         {
-            Delete(existing);
+           await Delete(existing);
         }
     }
 }
