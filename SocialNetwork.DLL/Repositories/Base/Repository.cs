@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialNetwork.DLL.Interfaces;
-using SocialNetwork.DLL.UoW;
 
 namespace SocialNetwork.DLL.Repositories.Base;
 

@@ -23,8 +23,8 @@
             @foreach (var message in @Model.History)
             {
                 <div>
-                    <label> @message.Sender.FirstName:</label>
-                    @message.Text
+                    <label class="gray-text"> @message.Sender.FirstName:</label>
+                    <label> @message.Text </label>
                 </div>
             }
         }

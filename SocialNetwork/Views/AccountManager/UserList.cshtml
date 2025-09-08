@@ -11,14 +11,21 @@
         foreach (var user in @Model.UserList)
         {
             <div>
-                <label>@user.GetFullName()</label>
+                <div class="mrgn">
+                    <img src="@user.Image" class="profile-picture"  alt="Profile picture"/>
+                    <br/>
+                    <label>@user.GetFullName()</label>
+                    <br/>
+                    <label>@user.About</label>
+                </div>
+                
                 @if (user != null && !user.IsFriendWithCurrent)
                 {
                     <form asp-controller="AccountManager"
                           asp-action="AddFriend"
                           asp-route-id="@user.Id"
                           method="post">
-                        <button type="submit" class="btn btn-sm btn-primary">
+                        <button type="submit" class="btn btn-sm btn-primary mrgn">
                             Добавить в друзья
                         </button>
                     </form>
