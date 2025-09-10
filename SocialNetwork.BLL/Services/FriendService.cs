@@ -11,12 +11,12 @@ namespace SocialNetwork.BLL.Services;
 public class FriendService(IUnitOfWork _unitOfWork, IMapper _mapper, UserManager<UserEntity> _userManager)
 {
 
-    public List<User> GetFriendsByUser(User user)
+    public async Task<List<User>> GetFriendsByUser(User user)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
         var userEntity = _mapper.Map<UserEntity>(user);
 
-        var listUsersEntity = repository.GetFriendsByUser(userEntity);
+        var listUsersEntity = await repository.GetFriendsByUser(userEntity);
 
         return [.. listUsersEntity.Select(u => _mapper.Map<User>(u))];
     }

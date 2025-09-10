@@ -39,7 +39,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await Set.FindAsync(id);
     }
 
-    public IEnumerable<T> GetAll()
+    public IQueryable<T> GetAll()
     {
         return Set;
     }

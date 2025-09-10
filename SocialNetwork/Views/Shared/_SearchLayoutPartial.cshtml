@@ -1,6 +1,12 @@
-﻿<div class="search-container">
-    <form method="get" style="display: flex" asp-area="" asp-controller="AccountManager" asp-action="UserList">
-        <i style="margin-top: 18px;" class="fa fa-search"></i>
-        <input class="form-control" type="text" placeholder="Поиск" name="search">
-    </form>
-</div>
+﻿@using SocialNetwork.BLL.Services
+@inject SocialNetwork.BLL.Services.UserService UserService;
+
+@if (UserService.IsSignIn(User))
+{
+    <div class="search-container">
+        <form method="get" style="display: flex" asp-area="" asp-controller="AccountManager" asp-action="UserList">
+            <i style="margin-top: 18px;" class="fa fa-search"></i>
+            <input class="form-control" type="text" placeholder="Поиск" name="search">
+        </form>
+    </div>
+}

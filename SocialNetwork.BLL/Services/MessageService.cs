@@ -20,9 +20,9 @@ public class MessageService(UserManager<UserEntity> userManager, IUnitOfWork uni
         var friend = await _userManager.FindByIdAsync(id);
 
         var repository = _unitOfWork.GetRepository<MessageEntity>() as MessageRepository;
-        var messages = repository.GetMessages(currentUser, friend).Select(m => _mapper.Map<Message>(m)).ToList();
+        var messages = await repository.GetMessages(currentUser, friend);
 
-        return (messages, _mapper.Map<User>(currentUser), _mapper.Map<User>(friend));
+        return ([.. messages.Select(m => _mapper.Map<Message>(m))], _mapper.Map<User>(currentUser), _mapper.Map<User>(friend));
     }
 
     public async Task NewMessageAsync(ClaimsPrincipal user, string text, string id)
@@ -43,6 +43,6 @@ public class MessageService(UserManager<UserEntity> userManager, IUnitOfWork uni
 
         await repository?.Create(item);
 
-        unitOfWork.SaveChanges();
+        await unitOfWork.SaveChanges();
     }
 }

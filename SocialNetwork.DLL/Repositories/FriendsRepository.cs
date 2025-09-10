@@ -24,11 +24,11 @@ public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntit
         }
     }
 
-    public List<UserEntity> GetFriendsByUser(UserEntity target)
+    public async Task<List<UserEntity>> GetFriendsByUser(UserEntity target)
     {
-        var friends = Set.Include(x => x.CurrentFriend).Include(x => x.User).AsEnumerable().Where(x => x.User.Id == target.Id).Select(x => x.CurrentFriend);
+        var friends = Set.Include(x => x.CurrentFriend).Include(x => x.User).AsQueryable().Where(x => x.User.Id == target.Id).Select(x => x.CurrentFriend);
 
-        return friends.ToList();
+        return await friends.ToListAsync();
     }
 
     public async Task DeleteFriend(UserEntity target, UserEntity friend)

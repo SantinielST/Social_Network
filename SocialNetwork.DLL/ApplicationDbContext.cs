@@ -10,13 +10,14 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
         Database.EnsureCreated();
+        //Database.Migrate();
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfiguration<FriendEntity>(new FriendConfiguration());
-        builder.ApplyConfiguration<MessageEntity>(new MessageConfuiguration());
+        builder.ApplyConfiguration(new FriendConfiguration());
+        builder.ApplyConfiguration(new MessageConfuiguration());
 
         // Конфигурация для UserEntity
         builder.Entity<UserEntity>()

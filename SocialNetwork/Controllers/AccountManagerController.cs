@@ -1,12 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
-using SocialNetwork.DLL.Entities;
-using SocialNetwork.DLL.Repositories;
-using SocialNetwork.DLL.UoW;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
 using System.Security.Claims;
@@ -75,7 +71,7 @@ public class AccountManagerController(
 
         var model = new UserViewModel(result);
 
-        model.Friends = friendService.GetFriendsByUser(model.User);
+        model.Friends = await friendService.GetFriendsByUser(model.User);
 
         return View("MyPage", model);
     }
@@ -154,10 +150,10 @@ public class AccountManagerController(
         var currentUserEntity = await userService.GetUserAsync(currentUser);
 
         // Получаем пользователей, подходящих под поиск
-        var list = userService.GetUsersForSearch(search, currentUserEntity.Id);
+        var list = await userService.GetUsersForSearch(search, currentUserEntity.Id);
 
         // Получаем друзей текущего пользователя
-        var friends = friendService.GetFriendsByUser(currentUserEntity);
+        var friends = await friendService.GetFriendsByUser(currentUserEntity);
 
         var data = list.Select(x =>
         {
