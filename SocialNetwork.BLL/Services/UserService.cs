@@ -114,10 +114,10 @@ public class UserService
         return userListEntity.Select(u => _mapper.Map<User>(u)).ToList();
     }
 
-    public async Task GenerateUsersAsync()
+    public async Task GenerateUsersAsync(int n)
     {
         var usergen = new GenerateUsers();
-        var userlist = usergen.Populate(5);
+        var userlist = usergen.Populate(n);
 
         foreach (var user in userlist)
         {
