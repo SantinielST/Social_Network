@@ -16,8 +16,15 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+        
+        // builder.Services.AddDbContext<ApplicationDbContext>(
+        //     options => options.UseNpgsql(
+        //         connection,
+        //         b => b.MigrationsAssembly("SocialNetwork.DLL") // сборка для миграций
+        //     ),
+        //     ServiceLifetime.Scoped);
+        
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection), ServiceLifetime.Scoped);
-
         builder.Services.AddIdentity<UserEntity, IdentityRole>(opts =>
         { 
             opts.Password.RequiredLength = 5;

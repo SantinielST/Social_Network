@@ -1,6 +1,6 @@
 @model SocialNetwork.ViewModels.ChatViewModel;
-@* 
-<meta http-equiv="refresh" content="5, @Url.Action("Chat", "AccountManager")"> *@
+
+@* <meta http-equiv="refresh" content="5"> *@
 
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
@@ -23,8 +23,8 @@
             @foreach (var message in @Model.History)
             {
                 <div>
-                    <label> @message.Sender.FirstName:</label>
-                    @message.Text
+                    <label class="gray-text"> @message.Sender.FirstName:</label>
+                    <label> @message.Text </label>
                 </div>
             }
         }

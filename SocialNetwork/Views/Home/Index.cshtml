@@ -1,6 +1,3 @@
-@using Microsoft.AspNetCore.Identity;
-@using SocialNetwork.BLL.Models;
-@using SocialNetwork.DLL.Entities
 @inject SocialNetwork.BLL.Services.UserService UserService;
 
 @model SocialNetwork.ViewModels.MainViewModel;
@@ -12,16 +9,18 @@
 
 @if (UserService.IsSignIn(User))
 {   
-    <meta http-equiv="refresh" content="0, url=@Url.Action("MyPage", "AccountManager")" />
+    <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="AccountManager" asp-action="MyPage" type="text/html" >Привет @User.Identity.Name! Нажми на меня чтобы попасть на свою страницу!</a>
+    </li>
 }
 else
 {
     <div class="row">
         <div class="side" >
-            <div class="center">
+            <div class="center-align gray-text">
                 Пользуйтесь нашей самой крутой соцсетью! Регистрируйтесь всего за 2 минуты, делитесь мыслями, находите новых друзей.
             </div>
-        <img class="main-img" src="https://muzawed.com/wp-content/uploads/2020/07/Social-networks-1140x600.png" />
+            <img class="main-img" src="https://muzawed.com/wp-content/uploads/2020/07/Social-networks-1140x600.png" alt="Main picture"/>
         </div>
 
         <div class="main">

@@ -50,7 +50,7 @@ public class AccountManagerController(
         }
         return RedirectToAction("Index", "Home");
     }
-
+    
     [Route("Logout")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -201,7 +201,6 @@ public class AccountManagerController(
     {
         var id = Request.Query["id"];
         var model = await GenerateChat(id);
-
         return View("Chat", model);
     }
 

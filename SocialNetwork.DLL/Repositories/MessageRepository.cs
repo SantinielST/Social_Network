@@ -25,5 +25,6 @@ public class MessageRepository : Repository<MessageEntity>
         itog.AddRange(to);
         itog.OrderBy(x => x.Id);
         return itog;
+        //return from.Concat(to).OrderBy(x => x.Id).ToList();
     }
 }
