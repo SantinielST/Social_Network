@@ -4,16 +4,11 @@ using SocialNetwork.DLL.Repositories.Base;
 
 namespace SocialNetwork.DLL.Repositories;
 
-public class FriendsRepository : Repository<FriendEntity>
+public class FriendsRepository(ApplicationDbContext db) : Repository<FriendEntity>(db)
 {
-    public FriendsRepository(ApplicationDbContext db) : base(db)
+    public async Task AddFriend(UserEntity target, UserEntity friend)
     {
-
-    }
-
-    public void AddFriend(UserEntity target, UserEntity friend)
-    {
-        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
+        var existing = await Set.FirstOrDefaultAsync(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
         if (existing == null)
         {
@@ -25,24 +20,24 @@ public class FriendsRepository : Repository<FriendEntity>
                 CurrentFriendId = friend.Id,
             };
 
-            Create(item);
+            await Create(item);
         }
     }
 
-    public List<UserEntity> GetFriendsByUser(UserEntity target)
+    public async Task<List<UserEntity>> GetFriendsByUser(UserEntity target)
     {
-        var friends = Set.Include(x => x.CurrentFriend).Include(x => x.User).AsEnumerable().Where(x => x.User.Id == target.Id).Select(x => x.CurrentFriend);
+        var friends = Set.Include(x => x.CurrentFriend).Include(x => x.User).AsQueryable().Where(x => x.User.Id == target.Id).Select(x => x.CurrentFriend);
 
-        return friends.ToList();
+        return await friends.ToListAsync();
     }
 
-    public void DeleteFriend(UserEntity target, UserEntity friend)
+    public async Task DeleteFriend(UserEntity target, UserEntity friend)
     {
-        var existing = Set.FirstOrDefault(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
+        var existing = await Set.FirstOrDefaultAsync(x => x.UserId == target.Id && x.CurrentFriendId == friend.Id);
 
         if (existing != null)
         {
-            Delete(existing);
+           await Delete(existing);
         }
     }
 }

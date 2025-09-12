@@ -1,10 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SocialNetwork.BLL.Helpers;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.DLL;
 using SocialNetwork.DLL.Entities;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 
 namespace SocialNetwork.BLL.Services;
 
@@ -90,7 +91,7 @@ public class UserService
         return await _userManager.UpdateAsync(userEntity);
     }
 
-    public List<User> GetUsersForSearch(string search, string currentUserId)
+    public async Task<List<User>> GetUsersForSearch(string search, string currentUserId)
     {
         IQueryable<UserEntity> query = _userManager.Users;
 
@@ -108,8 +109,22 @@ public class UserService
             );
         }
 
-        var userListEntity = query.ToList();
+        var userListEntity = await query.ToListAsync();
 
         return userListEntity.Select(u => _mapper.Map<User>(u)).ToList();
+    }
+
+    public async Task GenerateUsersAsync(int n)
+    {
+        var usergen = new GenerateUsers();
+        var userlist = usergen.Populate(n);
+
+        foreach (var user in userlist)
+        {
+            var result = await _userManager.CreateAsync(_mapper.Map<UserEntity>(user), "Qxwzsa243-Qxwzsa243");
+
+            if (!result.Succeeded)
+                continue;
+        }
     }
 }

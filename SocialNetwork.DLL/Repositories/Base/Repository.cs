@@ -21,19 +21,32 @@ public class Repository<T> : IRepository<T> where T : class
 
         Set = set;
     }
-    
-    public void Create(T item) => Set.Add(item);
-    public void Delete(T item) => Set.Remove(item);
-    public void Update(T item) => Set.Update(item);
 
-    public T Get(int id)
+    public async Task Create(T item)
     {
-        return Set.Find(id);
+        await Set.AddAsync(item);
+        await _db.SaveChangesAsync();
     }
 
-    public IEnumerable<T> GetAll()
+    public async Task Delete(T item)
+    {
+        Set.Remove(item);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<T> Get(int id)
+    {
+        return await Set.FindAsync(id);
+    }
+
+    public IQueryable<T> GetAll()
     {
         return Set;
     }
-    
+
+    public async Task Update(T item)
+    {
+        Set.Update(item);
+        await _db.SaveChangesAsync();
+    }
 }

@@ -45,8 +45,8 @@ public class UnitOfWork : IUnitOfWork
         return (IRepository<TEntity>)_repositories[type];
 
     }
-    public void SaveChanges(bool ensureAutoHistory = false)
+    public async Task SaveChanges(bool ensureAutoHistory = false)
     {
-        _appContext.SaveChanges();
+       await _appContext.SaveChangesAsync();
     }
 }
