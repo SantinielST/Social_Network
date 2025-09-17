@@ -1,15 +1,11 @@
-using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.BLL.Models;
 using SocialNetwork.BLL.Services;
-using SocialNetwork.DLL.Entities;
-using SocialNetwork.DLL.Repositories;
-using SocialNetwork.DLL.UoW;
 using SocialNetwork.Extentions;
 using SocialNetwork.ViewModels;
+using System.Security.Claims;
 
 namespace SocialNetwork.Controllers;
 
@@ -18,13 +14,12 @@ public class AccountManagerController(
     IMapper mapper,
     UserService userService,
     FriendService friendService,
-    UserManager<UserEntity> userManager,
-    IUnitOfWork unitOfWork)
+    MessageService messageService)
     : Controller
 {
     [HttpGet]
     [Route("Login")]
-    public IActionResult Login(string returnUrl = null) 
+    public IActionResult Login(string returnUrl = null)
     {
         if (User.Identity is { IsAuthenticated: true })
         {
@@ -35,7 +30,7 @@ public class AccountManagerController(
         // иначе показываем страницу входа
         return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
-    
+
     [Route("Login")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -76,7 +71,7 @@ public class AccountManagerController(
 
         var model = new UserViewModel(result);
 
-        model.Friends = friendService.GetFriendsByUser(model.User);
+        model.Friends = await friendService.GetFriendsByUser(model.User);
 
         return View("MyPage", model);
     }
@@ -135,7 +130,7 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> AddFriend(string id)
     {
-        friendService.AddFriend(User, id);
+        await friendService.AddFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -144,7 +139,7 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> DeleteFriend(string id)
     {
-        friendService.DeleteFriend(User, id);
+        await friendService.DeleteFriend(User, id);
 
         return RedirectToAction("MyPage", "AccountManager");
     }
@@ -155,10 +150,10 @@ public class AccountManagerController(
         var currentUserEntity = await userService.GetUserAsync(currentUser);
 
         // Получаем пользователей, подходящих под поиск
-        var list = userService.GetUsersForSearch(search, currentUserEntity.Id);
+        var list = await userService.GetUsersForSearch(search, currentUserEntity.Id);
 
         // Получаем друзей текущего пользователя
-        var friends = friendService.GetFriendsByUser(currentUserEntity);
+        var friends = await friendService.GetFriendsByUser(currentUserEntity);
 
         var data = list.Select(x =>
         {
@@ -166,10 +161,6 @@ public class AccountManagerController(
 
             // Проверка дружбы
             t.IsFriendWithCurrent = friends.Any(y => y.Id == x.Id || x.Id == currentUserEntity.Id);
-
-            // Безопасный full name для вьюхи
-            t.FullName = string.Join(" ", new[] { x.LastName, x.FirstName, x.MiddleName }
-                .Where(s => !string.IsNullOrEmpty(s)));
 
             return t;
         }).ToList();
@@ -192,23 +183,13 @@ public class AccountManagerController(
 
     private async Task<ChatViewModel> GenerateChat(string id)
     {
-        // Получаем DAL-сущности
-        var currentUserEntity = await userManager.GetUserAsync(User);
-        var friendEntity = await userManager.FindByIdAsync(id);
-
-        // Маппим в BLL-модели
-        var currentUser = mapper.Map<User>(currentUserEntity);
-        var friend = mapper.Map<User>(friendEntity);
-
-        // Берем сообщения
-        var repository = unitOfWork.GetRepository<Message>() as MessageRepository;
-        var messages = repository.GetMessages(currentUserEntity, friendEntity); // здесь можно оставить DAL-сущности
+        var result = await messageService.GetMessagesAsync(User, id);
 
         var model = new ChatViewModel
         {
-            You = currentUser,
-            ToWhom = friend,
-            History = messages.Select(m => mapper.Map<Message>(m)).OrderBy(x => x.Id).ToList()
+            You = result.Item2,
+            ToWhom = result.Item3,
+            History = result.Item1.OrderBy(x => x.Id).ToList()
         };
 
         return model;
@@ -218,9 +199,7 @@ public class AccountManagerController(
     [HttpGet]
     public async Task<IActionResult> Chat()
     {
-
         var id = Request.Query["id"];
-
         var model = await GenerateChat(id);
         return View("Chat", model);
     }
@@ -229,27 +208,10 @@ public class AccountManagerController(
     [HttpPost]
     public async Task<IActionResult> NewMessage(string id, ChatViewModel chat)
     {
-        var currentUserEntity = await userManager.GetUserAsync(User);
-        var friendEntity = await userManager.FindByIdAsync(id);
-
-        // Создаем сообщение (DAL)
-        var repository = unitOfWork.GetRepository<Message>() as MessageRepository;
-        var sender = mapper.Map<User>(currentUserEntity);
-        var recipient = mapper.Map<User>(friendEntity);
-        var item = new Message
-        {
-            Sender = sender,
-            Recipient = recipient,
-            Text = chat.NewMessage.Text
-        };
-        // Map BLL Message to DAL MessageEntity before saving
-        var messageEntity = mapper.Map<MessageEntity>(item);
-        repository?.Create(messageEntity);
-        unitOfWork.SaveChanges();
+        await messageService.NewMessageAsync(User, chat.NewMessage.Text, id);
 
         // Генерируем обновленный чат (BLL-модели)
         var model = await GenerateChat(id);
         return View("Chat", model);
     }
-    
 }

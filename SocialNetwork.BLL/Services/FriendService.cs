@@ -11,33 +11,33 @@ namespace SocialNetwork.BLL.Services;
 public class FriendService(IUnitOfWork _unitOfWork, IMapper _mapper, UserManager<UserEntity> _userManager)
 {
 
-    public List<User> GetFriendsByUser(User user)
+    public async Task<List<User>> GetFriendsByUser(User user)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
         var userEntity = _mapper.Map<UserEntity>(user);
 
-        var listUsersEntity = repository.GetFriendsByUser(userEntity);
+        var listUsersEntity = await repository.GetFriendsByUser(userEntity);
 
         return [.. listUsersEntity.Select(u => _mapper.Map<User>(u))];
     }
 
-    public void AddFriend(ClaimsPrincipal userRequester, string friendId)
+    public async Task AddFriend(ClaimsPrincipal userRequester, string friendId)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        var user = _userManager.GetUserAsync(userRequester).Result;
-        var friend = _userManager.FindByIdAsync(friendId).Result;
+        var user = await _userManager.GetUserAsync(userRequester);
+        var friend = await _userManager.FindByIdAsync(friendId);
 
-        repository.AddFriend(user, friend);
+        await repository.AddFriend(user, friend);
     }
 
-    public void DeleteFriend(ClaimsPrincipal userRequester, string friendId)
+    public async Task DeleteFriend(ClaimsPrincipal userRequester, string friendId)
     {
         var repository = _unitOfWork.GetRepository<FriendEntity>() as FriendsRepository;
 
-        var user = _userManager.GetUserAsync(userRequester).Result;
-        var friend = _userManager.FindByIdAsync(friendId).Result;
+        var user = await _userManager.GetUserAsync(userRequester);
+        var friend = await _userManager.FindByIdAsync(friendId);
 
-        repository.DeleteFriend(user, friend);
+        await repository.DeleteFriend(user, friend);
     }
 }

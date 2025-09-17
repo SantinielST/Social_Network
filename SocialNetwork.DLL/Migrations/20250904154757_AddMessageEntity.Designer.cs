@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SocialNetwork.DLL;
@@ -11,9 +12,11 @@ using SocialNetwork.DLL;
 namespace SocialNetwork.DLL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250904154757_AddMessageEntity")]
+    partial class AddMessageEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,6 +182,35 @@ namespace SocialNetwork.DLL.Migrations
                     b.ToTable("UserFriends", (string)null);
                 });
 
+            modelBuilder.Entity("SocialNetwork.DLL.Entities.MessageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Mesages", (string)null);
+                });
+
             modelBuilder.Entity("SocialNetwork.DLL.Entities.UserEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -222,7 +254,6 @@ namespace SocialNetwork.DLL.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
@@ -335,6 +366,25 @@ namespace SocialNetwork.DLL.Migrations
                     b.Navigation("CurrentFriend");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialNetwork.DLL.Entities.MessageEntity", b =>
+                {
+                    b.HasOne("SocialNetwork.DLL.Entities.UserEntity", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.DLL.Entities.UserEntity", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
                 });
 #pragma warning restore 612, 618
         }
